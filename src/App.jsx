@@ -9,9 +9,19 @@ import Contact from './sections/Contact'
 import Footer from './sections/Footer'
 import ParticlesBackground from './components/ParticlesBackground'
 import CustomCursor from './components/CustomCursor'
+import IntroAnimation from './components/IntroAnimation'
+import { useState } from 'react'
 
 export default function App() {
+
+  const [showIntro, setShowIntro] = useState(true);
   return(
+      <>
+
+    {showIntro && <IntroAnimation onFinish={() => setShowIntro(false)} />}
+      {!showIntro &&(
+
+
     <div className='relative gradient text-white'>
       <CustomCursor />
       {/*<ParticlesBackground />*/}
@@ -27,5 +37,8 @@ export default function App() {
       <Contact />
       <Footer />
     </div>
+    
+    )}
+    </>
   )
 }

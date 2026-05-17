@@ -1,8 +1,30 @@
 
-
+import { FaLinkedinIn, FaGithub, FaInstagram } from "react-icons/fa";
 import React, { useMemo , useState } from "react";
 import ParticlesBackground from "../components/ParticlesBackground";
-import { motion } from "framer-motion";
+import { hover, motion } from "framer-motion";
+import avator from "../assets/avator.png"
+
+
+
+const socials= [ 
+  {Icon: FaInstagram,label:"Instagram", href: "https://instagram.com/chinmaybiswas475"},
+  {Icon: FaLinkedinIn,label:"LinkedIn", href: "https://www.linkedin.com/in/chinmay-biswas-a8098b298/"},
+  {Icon: FaGithub,label:"GitHub", href: "https://github.com/ChinmayBiswas"}
+]
+
+const glowvariants={
+  initial:{scale:1,y:0,filter:"drop-shadow(0 0 0 rgba(255,255,255,0.6))"},
+  hover:{
+    scale:1.2,y:-3,
+    filter:"drop-shadow(0 0 8px rgba(13,88,204,0.9)) drop-shadow(0 0 18px rgba(16,185,129,0.8))",
+    transition:{type:"spring", stiffness:300, damping:15}
+  },
+  tap:{scale:0.95,y:0, transition:{duration:0.08}}
+}
+
+
+
 export default function Home() {
 
 const roles= useMemo(() => ["MERN stack Developer", "C++ Programmer", "Game Developer","AI & ML Engineer"],[])
@@ -79,8 +101,21 @@ else if (deleting && subIndex === 0) {
           <div className="w-full lg:pr-24 mx-auto max-w-[48rem]">
 
 
-            <motion.div
-            className="mb-3 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-white tracking-wide min-h-[60px]"
+            
+
+            <motion.h1 className=" mt-13 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-clip-text
+            bg-gradient-to-r from-[#1cd8d2] via-[#00bf8f] to-[#302b63] text-transparent"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{duration: 2}} 
+            >
+              Hello I'm <br/>
+              <span className=" text-white font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl lg:whitespace-nowrap">
+              Chinmay Biswas
+              </span>
+
+              <motion.div
+            className="mb-1 mt-2 text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold text-white tracking-wide min-h-[60px]"
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{duration: 0.6 }}
@@ -94,18 +129,8 @@ else if (deleting && subIndex === 0) {
 
             </motion.div>
 
-            <motion.h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-clip-text
-            bg-gradient-to-r from-[#1cd8d2] via-[#00bf8f] to-[#302b63] text-transparent"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{duration: 2}} 
-            >
-              Hello I'm <br/>
-              <span className=" text-white font-bold text-5xl sm:text-6xl md:text-7xl lg:text-8xl lg:whitespace-nowrap">
-              Chinmay Biswas
-              </span>
             </motion.h1>
-            <motion.p className="mt-6 text-sm sm:text-sm md:text-md text-gray-300 max-w-2xl mx-auto lg:mx-0"
+            <motion.p className="mt-1 text-sm sm:text-sm md:text-md text-gray-300 max-w-2xl mx-auto lg:mx-0"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{delay:0.5,duration: 1.5}} 
@@ -117,7 +142,9 @@ else if (deleting && subIndex === 0) {
                my limits to create innovative solutions through code
             </motion.p>
 
-            <motion.div className="mt-16 flex flex-wrap items-center justify-center lg:justify-start gap-6 z-60"
+            
+
+            <motion.div className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-6 z-60"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{delay:.7,duration: 1.3}} 
@@ -214,10 +241,71 @@ z-[60]
 </div>
              </motion.div>
 
+                <div className="mt-3 flex gap-5 text-2xl md:text-3xl justify-center lg:justify-start">
+                  {socials.map(({ Icon,label,href }) => (
+                    <motion.a 
+                    href={href}
+                    target="_blank"
+                    key={label}
+                    aria-label={label}
+                    rel="noopener norefrence"
+                    variants={glowvariants}
+                    initial="initial"
+                    whileHover="hover"
+                    whileTap="tap"
+                    className="text-gray-300"
+                    
+                    
+                    >
+                      <Icon/>
+
+
+
+                    </motion.a>
+                      
+                      
+                    
+                  ))}
+                </div>
 
 
           </div>
         </div>
+
+
+                  
+                    
+
+
+                    <div className="hidden lg:block relative">
+
+                      <div
+                      className="absolute top-1/2 -translate-y-1/2 pointer-events-none"
+
+                        style={{
+                          right: "10px",width:"min(30vw , 900px)", minHeight:"min(30vw , 750px)", borderRadius:"50%",
+                          filter: "blur(38px)",
+                          opacity: 0.32,
+                          background:"conic-gradient(from 0deg, #1cd8d2,  #00bf8f,#302b63,#1cd8d2)"
+                        
+                        }}
+                      />
+
+
+
+                      <motion.img
+                      src={avator}
+                      alt="Home Cartoon"
+                      className="absolute top-1/2 -translate-y-1/2 object-contain select-none pointer-events-none"
+                      style={{right: "60px" ,width:"min(25vw , 780px)", maxHeight:"90vh"}}
+                      initial={{ opacity: 0, y: 40 ,scale:0.7}}
+                      animate={{ opacity: 1, y: 0, scale :1 }}
+                      transition={{duration: 1, delay:0}} 
+                      />
+                    </div>
+
+
+
       </div>
 
     </section>
