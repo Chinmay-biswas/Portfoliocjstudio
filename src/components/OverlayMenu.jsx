@@ -12,7 +12,7 @@ export default function OverlayMenu({ isOpen, onClose }) {
             {
                 isOpen && (
                     <motion.div
-                        className="fixed inset-0 flex items-center justify-center z-50"
+                        className="fixed inset-0 flex items-center justify-center z-100"
                         
                         initial={{ clipPath: `circle(0% at ${origin})` }}
                         animate={{ clipPath: `circle(150% at ${origin})` }}

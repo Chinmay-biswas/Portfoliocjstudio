@@ -176,7 +176,7 @@ opacity-0 invisible
 group-hover:opacity-100 group-hover:visible
 
 transition-all duration-300 delay-200
-z-[60]
+z-[10]
 "
   >
 

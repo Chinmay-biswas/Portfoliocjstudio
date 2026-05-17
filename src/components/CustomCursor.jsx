@@ -19,7 +19,7 @@ useEffect(() =>{
 
 
   return (
-    <div className="pointer-event-none fixed top-0 left-0 z-[-999]"
+    <div className="pointer-events-none fixed top-0 left-0 z-[9999]"
     
     style={{ transform: `translate(${position.x - 40}px, ${position.y - 40}px)` }}
     > 
