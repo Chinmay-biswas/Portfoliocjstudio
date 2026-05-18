@@ -41,27 +41,36 @@ export default function Navbar(){
 
     useEffect(() => {
         const handleScroll = () => {
-            if(forcevisible) {
-                setVisible(true);
-                return;
-            }
-            const currentScrollY = window.scrollY;
-            if (currentScrollY > lastScrollY.current) {
-                setVisible(false);
-            } else {
-                setVisible(true);
+  // Always visible on Home
+  if (forcevisible) {
+    setVisible(true);
+    return;
+  }
 
-                if (timerId.current) 
-                    clearTimeout(timerId.current);
-                    timerId.current = setTimeout(() => {
-                        setVisible(true);
-                    }, 3000);
-                
-                
-            }
-            lastScrollY.current = currentScrollY;
+  const currentScrollY = window.scrollY;
 
-        }
+  // Scrolling DOWN
+  if (currentScrollY > lastScrollY.current) {
+    setVisible(false);
+  }
+
+  // Scrolling UP
+  else {
+    setVisible(true);
+
+    // Reset timer
+    if (timerId.current) {
+      clearTimeout(timerId.current);
+    }
+
+    // Auto hide after 2 sec
+    timerId.current = setTimeout(() => {
+      setVisible(false);
+    }, 2000);
+  }
+
+  lastScrollY.current = currentScrollY;
+};
         window.addEventListener('scroll', handleScroll, { passive: true });
 
         return () => {

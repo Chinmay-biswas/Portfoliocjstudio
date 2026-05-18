@@ -1,5 +1,5 @@
 import { delay, motion } from "framer-motion";
-import p from "../assets/boy.jpg"
+import p from "../assets/profile1.png"
 
 export default function About() {
 
@@ -36,16 +36,16 @@ export default function About() {
 
           
 
-              <motion.div className="relative w-[160px] h-[160px] md:w-[200px] md:h-[200px]
+              <motion.div className="relative w-[160px] h-[220px] md:w-[200px] md:h-[320px]
               rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-[#1cd8d2]/20  to-[#302b63]/20 
               border-[#1cd8d2]/25 "
-              whileHover={{ scale: 1.1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }} 
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 400, damping: 15 }}
               initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{duration: 1}}
                   viewport={{ amount:0.2}}>
-                <img src={p} alt="profile " className=" absolute inset-0"/>
+                <img src={p} alt="profile " className="absolute inset-0 w-full h-full object-cover"/>
               </motion.div>
 
               <div className=" flex-1 flex flex-col justify-center text-center md:text-left">
@@ -101,7 +101,7 @@ export default function About() {
                   initial={{ opacity: 0, x: -30 }}
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{duration: 1}}
-                  viewport={{ amount:0.5}} /* here can use once=ture  for one time animation  */
+                  viewport={{ amount:0.3}} /* here can use once=ture  for one time animation  */
                   > 
 
                     <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">

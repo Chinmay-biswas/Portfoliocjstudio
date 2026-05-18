@@ -10,7 +10,7 @@ import avator from "../assets/avator.png"
 const socials= [ 
   {Icon: FaInstagram,label:"Instagram", href: "https://instagram.com/chinmaybiswas475"},
   {Icon: FaLinkedinIn,label:"LinkedIn", href: "https://www.linkedin.com/in/chinmay-biswas-a8098b298/"},
-  {Icon: FaGithub,label:"GitHub", href: "https://github.com/ChinmayBiswas"}
+  {Icon: FaGithub,label:"GitHub", href: "https://github.com/Chinmay-biswas"}
 ]
 
 const glowvariants={
