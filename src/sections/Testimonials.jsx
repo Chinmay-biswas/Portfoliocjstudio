@@ -61,6 +61,7 @@ export default function Testimonials(){
           initial={{opacity:0,y:50}}
         whileInView={{opacity:1,y:0}}
         transition={{duration:.6,delay:i*0.2}}
+        viewport={{ amount:0.3}}
         className="bg-white/10 backdrop-blur-lg border border-white rounded-2xl p-6 flex flex-col items-center text-center transform transition duration-500
         hover:scale-105 hover:-rotate-1"
           >

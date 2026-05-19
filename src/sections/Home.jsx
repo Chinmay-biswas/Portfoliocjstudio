@@ -31,6 +31,7 @@ const roles= useMemo(() => ["MERN stack Developer", "C++ Programmer", "Game Deve
 const [index, setIndex] = useState(0);
 const [subIndex, setSubIndex] = useState(0);
 const [deleting, setDeleting] = useState(false);
+const [showResume, setShowResume] = useState(false);
 
 React.useEffect(() => {
 
@@ -156,29 +157,41 @@ else if (deleting && subIndex === 0) {
 
   {/* Resume Button */}
   <button
-    className="text-white px-5 py-3 rounded-full font-medium 
-    border border-gray-500 hover:bg-gray-700 
-    transition-all duration-300"
-  >
-    Resume ▸
-  </button>
+  onClick={() => {
+    if (window.innerWidth < 768) {
+      setShowResume((p) => !p);
+    }
+  }}
+  className="text-white px-5 py-3 rounded-full 
+  border border-gray-500 hover:bg-gray-700 
+  transition-all duration-300"
+>
+  Resume ▸
+</button>
 
   {/* Side Resume Cards */}
   <div
-    className="
+  className={`
 absolute
 
 md:left-[280%] md:top-1/2 md:-translate-y-1/2
 
 top-full left-1/2 -translate-x-1/2 mt-4
 
-opacity-0 invisible
-group-hover:opacity-100 group-hover:visible
-
 transition-all duration-300 delay-200
-z-[10]
-"
-  >
+z-[40]
+
+md:opacity-0 md:invisible
+md:group-hover:opacity-100
+md:group-hover:visible
+
+${
+  showResume
+    ? "opacity-100 visible"
+    : "opacity-0 invisible"
+}
+`}
+>
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-[300px] md:w-[420px]">
 
