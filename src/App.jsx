@@ -3,7 +3,7 @@ import Home from './sections/Home'
 import About from './sections/About'
 import Skills from './sections/Skills'
 import Projects from './sections/Projects'
-import Experience from './sections/Experience'
+import Experienceprochat from './sections/Experienceprochat'
 import Testimonials from './sections/Testimonials'
 import Contact from './sections/Contact'
 import Footer from './sections/Footer'
@@ -11,6 +11,8 @@ import ParticlesBackground from './components/ParticlesBackground'
 import CustomCursor from './components/CustomCursor'
 import IntroAnimation from './components/IntroAnimation'
 import { useState } from 'react'
+import Experience from './sections/Experience'
+import A from './sections/A'
 
 export default function App() {
 
@@ -27,15 +29,15 @@ export default function App() {
       {/*<ParticlesBackground />*/}
 
 
-      <Navbar />
-      <Home />
-      <About />
-      <Skills />
-      <Projects />
-      <Experience />
-      <Testimonials />
-      <Contact />
-      <Footer />
+      <Navbar/>
+      <Home/>
+      <About/>
+      <Skills/>
+      <Projects/>
+      <Experienceprochat/>
+      <Testimonials/>
+      <Contact/>
+      <Footer/>
     </div>
     
     )}

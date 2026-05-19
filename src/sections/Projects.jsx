@@ -1,5 +1,4 @@
-import {motion,useScroll,useMotionValueEvent, AnimatePresence}
-from "framer-motion";
+import {motion,useScroll,useMotionValueEvent, AnimatePresence} from "framer-motion";
 import { useEffect, useRef, useState ,useMemo} from "react"
 import photo1 from "../assets/photo1.JPG"
 import photo2 from "../assets/photo2.PNG"
@@ -22,7 +21,9 @@ const useIsMobile = (query="(max-width:639px)")=>{
 
 
     mql.addEventListener("change",handler);
-    setIsMobile(mql.matches);
+   queueMicrotask(() => {
+  setIsMobile(mql.matches);
+});
     return ()=> mql.removeEventListener("change",handler);
 
   },[query])
@@ -39,6 +40,7 @@ export default function Projects(){
       title:"CJ studio" ,
       link : "http://www.nk.studio/",
       gitlink : "http://www.nk.studio/",
+      about: "the game is devloped by me by the the help of unity game engine",
       bgColor: "#0d4d3d",
       image:isMobile?photo1:img1
     },
@@ -46,6 +48,7 @@ export default function Projects(){
       title:"gamily" ,
       link : "http://www.nk.studio/",
       gitlink : "http://www.nk.studio/",
+      about: "the game is devloped by me by the the help of unity game engine",
       bgColor: "#3884d3",
       image:isMobile?photo2:img2
     },
@@ -53,6 +56,7 @@ export default function Projects(){
       title:"Hungry Tiger" ,
       link : "http://www.nk.studio/",
       gitlink : "http://www.nk.studio/",
+      about: "the game is devloped by me by the the help of unity game engine",
       bgColor: "#dc9317",
       image:isMobile?photo3:img3
     }
@@ -161,6 +165,19 @@ return(
           </div>
         ))}
       </div>
+
+        <motion.p
+          key={activeProject?.about}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.4 }}
+          className={`absolute z-30 text-center text-white/90 max-w-2xl px-6 leading-relaxed ${
+            isMobile ? "bottom-28 text-sm" : "bottom-32 text-lg"
+          }`}
+        >
+          {activeProject?.about}
+        </motion.p>
 
       
       <div className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start absolute left-1/2 -translate-x-1/2 z-30 
