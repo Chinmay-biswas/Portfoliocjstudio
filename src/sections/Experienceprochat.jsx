@@ -6,6 +6,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
+import ParticlesBackground from "../components/ParticlesBackground";
 
 const exps = [
   {
@@ -191,6 +192,7 @@ function DesktopExpItem({
   const pointerEvents = absoluteIdx >= activeIndex && absoluteIdx < activeIndex + visibleCount ? "auto" : "none";
 
   return (
+    
     <motion.div
       className="absolute left-1/2 top-1/2 flex justify-center items-center"
       style={{ opacity, x, y: "-50%", scale, pointerEvents }}
@@ -323,10 +325,16 @@ export default function Experienceprochat() {
   const mobileLineSize = useTransform(mobileScrollYProgress, (v) => `${v * 100}%`);
 
   return (
+    
     <section id="exp" className="relative bg-black text-white">
-      <div ref={mobileSceneRef} className="relative min-h-screen px-6 pb-16 pt-8 md:hidden">
-        <h2 className="text-4xl font-semibold text-center">Journey</h2>
+      <ParticlesBackground />
 
+    <div className="relative z-10">
+      
+      <div ref={mobileSceneRef} className="relative min-h-screen px-6 pb-16 pt-8 md:hidden">
+        
+        <h2 className="text-4xl font-semibold text-center">Journey</h2>
+          
         <div className="relative mx-auto mt-12 w-full max-w-md">
           <div className="absolute bottom-0 left-0 top-0 w-[3px] rounded bg-white/15">
             <motion.div
@@ -375,7 +383,7 @@ export default function Experienceprochat() {
         className="relative hidden md:block"
       >
         <div className="sticky top-0 h-screen flex flex-col">
-          <h2 className="text-4xl sm:text-5xl font-semibold mt-5 text-center">
+          <h2 className="text-8xl sm:text-8xl font-bold mt-5 text-center">
             Journey
           </h2>
           <div className="flex flex-1 items-start justify-center px-6 pb-10 md:items-center">
@@ -386,6 +394,7 @@ export default function Experienceprochat() {
             />
           </div>
         </div>
+      </div>
       </div>
     </section>
   );

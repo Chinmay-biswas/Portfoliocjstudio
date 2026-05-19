@@ -14,7 +14,6 @@ import { useState } from 'react'
 import Experience from './sections/Experience'
 
 
-
 export default function App() {
 
   const [showIntro, setShowIntro] = useState(true);
