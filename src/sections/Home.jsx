@@ -2,8 +2,9 @@
 import { FaLinkedinIn, FaGithub, FaInstagram } from "react-icons/fa";
 import React, { useMemo , useState } from "react";
 import ParticlesBackground from "../components/ParticlesBackground";
-import { hover, motion } from "framer-motion";
+import { hover } from "framer-motion";
 import avator from "../assets/avator.png"
+import { motion, AnimatePresence } from "framer-motion";
 
 
 
@@ -23,7 +24,9 @@ const glowvariants={
   tap:{scale:0.95,y:0, transition:{duration:0.08}}
 }
 
-
+const isMobile =
+  typeof window !== "undefined" &&
+  window.innerWidth < 768;
 
 export default function Home() {
 
@@ -158,10 +161,10 @@ else if (deleting && subIndex === 0) {
   {/* Resume Button */}
   <button
   onClick={() => {
-    if (window.innerWidth < 768) {
-      setShowResume((p) => !p);
-    }
-  }}
+  if (window.innerWidth < 768) {
+    setShowResume(true);
+  }
+}}
   className="text-white px-5 py-3 rounded-full 
   border border-gray-500 hover:bg-gray-700 
   transition-all duration-300"
@@ -170,86 +173,128 @@ else if (deleting && subIndex === 0) {
 </button>
 
   {/* Side Resume Cards */}
-  <div
-  className={`
+{/* Desktop Resume Dropdown */}
+<div
+  className="
+hidden md:grid
 absolute
-
-md:left-[280%] md:top-1/2 md:-translate-y-1/2
-
-top-full left-1/2 -translate-x-1/2 mt-4
-
-transition-all duration-300 delay-200
-z-[40]
-
-md:opacity-0 md:invisible
+md:left-[150%] md:top-1/2 md:-translate-y-1/2
+opacity-0 invisible
 md:group-hover:opacity-100
 md:group-hover:visible
-
-${
-  showResume
-    ? "opacity-100 visible"
-    : "opacity-0 invisible"
-}
-`}
+transition-all duration-300 delay-200
+z-[40]
+grid-cols-2 gap-3 w-[420px]
+"
 >
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-[300px] md:w-[420px]">
+  <a
+    href="https://drive.google.com/uc?export=download&id=1gNBCk-O8Ni1ShAP6OJ5WJz0YC6YVUtab"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-[#111] border border-gray-700 text-white
+    px-5 py-4 rounded-2xl text-center
+    hover:text-xl hover:scale-105
+    transition-all duration-300"
+  >
+    AI / ML
+  </a>
 
-      {/* AI/ML */}
-      <a
-        href="https://drive.google.com/uc?export=download&id=1gNBCk-O8Ni1ShAP6OJ5WJz0YC6YVUtab"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="bg-[#111] border border-gray-700 text-white
-        px-5 py-4 rounded-2xl text-center
-        hover:text-xl hover:scale-105
-        transition-all duration-300"
+  <a
+    href="https://drive.google.com/uc?export=download&id=1rME9-eQFsywtZMUrjUdYy25pdKwLQh2F"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-[#111] border border-gray-700 text-white
+    px-5 py-4 rounded-2xl text-center
+    hover:text-xl hover:scale-105
+    transition-all duration-300"
+  >
+    Full Stack
+  </a>
+
+  <a
+    href="https://drive.google.com/uc?export=download&id=1Yj3sF9q0Xt6fJ7hm5Z2b0nkOl1L1j_ut"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-[#111] border border-gray-700 text-white
+    px-5 py-4 rounded-2xl text-center
+    hover:text-xl hover:scale-105
+    transition-all duration-300"
+  >
+    Game Dev
+  </a>
+
+  <a
+    href="https://drive.google.com/uc?export=download&id=1P0YD8YlBVQtQeQ7UBjIAPb0H-6xLLwrQ"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="bg-[#111] border border-gray-700 text-white
+    px-5 py-4 rounded-2xl text-center
+    hover:text-xl hover:scale-105
+    transition-all duration-300"
+  >
+    C++ / SDE
+  </a>
+
+</div>
+
+{/* Mobile Resume Popup */}
+<AnimatePresence>
+  {showResume && (
+    <motion.div
+      className="fixed inset-0 z-[9999] bg-black/90
+      flex items-center justify-center md:hidden"
+      
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+
+      <button
+        onClick={() => setShowResume(false)}
+        className="absolute top-6 right-6 text-white text-4xl"
       >
-        AI / ML
-      </a>
+        ✕
+      </button>
 
-      {/* Full Stack */}
-      <a
-        href="https://drive.google.com/uc?export=download&id=1rME9-eQFsywtZMUrjUdYy25pdKwLQh2F"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="bg-[#111] border border-gray-700 text-white
-        px-5 py-4 rounded-2xl text-center
-        hover:text-xl hover:scale-105
-        transition-all duration-300"
-      >
-        Full Stack
-      </a>
+      <div className="grid grid-cols-1 gap-4 w-[85%] max-w-sm">
 
-      {/* Game Dev */}
-      <a
-        href="https://drive.google.com/uc?export=download&id=1Yj3sF9q0Xt6fJ7hm5Z2b0nkOl1L1j_ut"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="bg-[#111] border border-gray-700 text-white
-        px-5 py-4 rounded-2xl text-center
-        hover:text-xl hover:scale-105
-        transition-all duration-300"
-      >
-        Game Dev
-      </a>
+        <a
+          href="https://drive.google.com/uc?export=download&id=1gNBCk-O8Ni1ShAP6OJ5WJz0YC6YVUtab"
+          className="bg-[#111] border border-gray-700
+          text-white py-4 rounded-2xl text-center"
+        >
+          AI / ML
+        </a>
 
-      {/* C++ / SDE */}
-      <a
-        href="https://drive.google.com/uc?export=download&id=1P0YD8YlBVQtQeQ7UBjIAPb0H-6xLLwrQ"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="bg-[#111] border border-gray-700 text-white
-        px-5 py-4 rounded-2xl text-center
-        hover:text-xl hover:scale-105
-        transition-all duration-300"
-      >
-        C++ / SDE
-      </a>
+        <a
+          href="https://drive.google.com/uc?export=download&id=1rME9-eQFsywtZMUrjUdYy25pdKwLQh2F"
+          className="bg-[#111] border border-gray-700
+          text-white py-4 rounded-2xl text-center"
+        >
+          Full Stack
+        </a>
 
-    </div>
+        <a
+          href="https://drive.google.com/uc?export=download&id=1Yj3sF9q0Xt6fJ7hm5Z2b0nkOl1L1j_ut"
+          className="bg-[#111] border border-gray-700
+          text-white py-4 rounded-2xl text-center"
+        >
+          Game Dev
+        </a>
 
-  </div>
+        <a
+          href="https://drive.google.com/uc?export=download&id=1P0YD8YlBVQtQeQ7UBjIAPb0H-6xLLwrQ"
+          className="bg-[#111] border border-gray-700
+          text-white py-4 rounded-2xl text-center"
+        >
+          C++ / SDE
+        </a>
+
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
 </div>
              </motion.div>
