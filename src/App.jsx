@@ -12,7 +12,8 @@ import CustomCursor from './components/CustomCursor'
 import IntroAnimation from './components/IntroAnimation'
 import { useState } from 'react'
 import Experience from './sections/Experience'
-import A from './sections/A'
+
+
 
 export default function App() {
 
