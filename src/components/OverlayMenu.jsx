@@ -12,7 +12,7 @@ export default function OverlayMenu({ isOpen, onClose }) {
             {
                 isOpen && (
                     <motion.div
-                        className="fixed inset-0 flex items-center justify-center z-100"
+                        className="fixed inset-0 z-[9000] flex items-center justify-center"
                         
                         initial={{ clipPath: `circle(0% at ${origin})` }}
                         animate={{ clipPath: `circle(150% at ${origin})` }}
@@ -23,7 +23,7 @@ export default function OverlayMenu({ isOpen, onClose }) {
 
 
                         <button onClick={onClose}
-                            className="absolute top-6 right-6 text-white text-3xl focus:outline-none "
+                            className="absolute right-5 top-5 z-[9010] flex h-11 w-11 items-center justify-center text-white text-3xl focus:outline-none"
                             aria-label="Close Menu">
                             <FiX/>  
                         </button>

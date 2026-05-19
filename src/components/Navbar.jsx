@@ -93,7 +93,7 @@ export default function Navbar(){
             <div className="text-2xl font-bold text-white hidden sm:block">Chinmay Biswas</div></div>
 
             <div className="block lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2">
-                <button onClick={()=>{ setMenuOpen(true) , setVisible(false)}  } className="text-white text-3xl focus:outline-none" aria-label="Open Menu"><CgMenuBoxed /></button>
+                <button onClick={()=>{ setMenuOpen(true) , setVisible(false)}  } className="flex h-11 w-11 items-center justify-center text-white text-3xl focus:outline-none" aria-label="Open Menu"><CgMenuBoxed /></button>
 
             </div>
 

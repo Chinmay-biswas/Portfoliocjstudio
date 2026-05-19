@@ -238,64 +238,6 @@ grid-cols-2 gap-3 w-[420px]
 
 </div>
 
-{/* Mobile Resume Popup */}
-<AnimatePresence>
-  {showResume && (
-    <motion.div
-      className="fixed inset-0 z-[9999] bg-black/90
-      flex items-center justify-center md:hidden"
-      
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-
-      <button
-        onClick={() => setShowResume(false)}
-        className="absolute top-6 right-6 text-white text-4xl"
-      >
-        ✕
-      </button>
-
-      <div className="grid grid-cols-1 gap-4 w-[85%] max-w-sm">
-
-        <a
-          href="https://drive.google.com/uc?export=download&id=1gNBCk-O8Ni1ShAP6OJ5WJz0YC6YVUtab"
-          className="bg-[#111] border border-gray-700
-          text-white py-4 rounded-2xl text-center"
-        >
-          AI / ML
-        </a>
-
-        <a
-          href="https://drive.google.com/uc?export=download&id=1rME9-eQFsywtZMUrjUdYy25pdKwLQh2F"
-          className="bg-[#111] border border-gray-700
-          text-white py-4 rounded-2xl text-center"
-        >
-          Full Stack
-        </a>
-
-        <a
-          href="https://drive.google.com/uc?export=download&id=1Yj3sF9q0Xt6fJ7hm5Z2b0nkOl1L1j_ut"
-          className="bg-[#111] border border-gray-700
-          text-white py-4 rounded-2xl text-center"
-        >
-          Game Dev
-        </a>
-
-        <a
-          href="https://drive.google.com/uc?export=download&id=1P0YD8YlBVQtQeQ7UBjIAPb0H-6xLLwrQ"
-          className="bg-[#111] border border-gray-700
-          text-white py-4 rounded-2xl text-center"
-        >
-          C++ / SDE
-        </a>
-
-      </div>
-    </motion.div>
-  )}
-</AnimatePresence>
-
 </div>
              </motion.div>
 
@@ -365,6 +307,64 @@ grid-cols-2 gap-3 w-[420px]
 
 
       </div>
+
+      {/* Mobile Resume Popup */}
+      <AnimatePresence>
+        {showResume && (
+          <motion.div
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 md:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowResume(false)}
+          >
+            <button
+              type="button"
+              onClick={(event) => {
+                event.stopPropagation();
+                setShowResume(false);
+              }}
+              className="absolute left-5 top-5 z-[10000] flex h-11 w-11 items-center justify-center text-white text-4xl"
+              aria-label="Close Resume Options"
+            >
+              x
+            </button>
+
+            <div
+              className="grid grid-cols-1 gap-4 w-[85%] max-w-sm"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <a
+                href="https://drive.google.com/uc?export=download&id=1gNBCk-O8Ni1ShAP6OJ5WJz0YC6YVUtab"
+                className="bg-[#111] border border-gray-700 text-white py-4 rounded-2xl text-center"
+              >
+                AI / ML
+              </a>
+
+              <a
+                href="https://drive.google.com/uc?export=download&id=1rME9-eQFsywtZMUrjUdYy25pdKwLQh2F"
+                className="bg-[#111] border border-gray-700 text-white py-4 rounded-2xl text-center"
+              >
+                Full Stack
+              </a>
+
+              <a
+                href="https://drive.google.com/uc?export=download&id=1Yj3sF9q0Xt6fJ7hm5Z2b0nkOl1L1j_ut"
+                className="bg-[#111] border border-gray-700 text-white py-4 rounded-2xl text-center"
+              >
+                Game Dev
+              </a>
+
+              <a
+                href="https://drive.google.com/uc?export=download&id=1P0YD8YlBVQtQeQ7UBjIAPb0H-6xLLwrQ"
+                className="bg-[#111] border border-gray-700 text-white py-4 rounded-2xl text-center"
+              >
+                C++ / SDE
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </section>
 
