@@ -37,19 +37,20 @@ export default function Projects(){
 
   const projects = useMemo(() => [
     {
-      title:"CJ studio" ,
-      link : "http://www.nk.studio/",
-      gitlink : "http://www.nk.studio/",
+      title:"Echoes Of Regret" ,
+      link : "https://chinmaybiswas475.itch.io/echoes-of-regret",
+      gitlink : "https://github.com/Chinmay-biswas/Echoes-of-Regret",
       about: "the game is devloped by me by the the help of unity game engine",
-      bgColor: "#0d4d3d",
+      bgColor: "#9b1b1b",
+      video:"https://www.youtube.com/embed/lFwUZPDMnK0",
       image:isMobile?photo1:img1
     },
     {
-      title:"gamily" ,
-      link : "http://www.nk.studio/",
-      gitlink : "http://www.nk.studio/",
+      title:"Hot-Corner" ,
+      link : "https://hot-corner.vercel.app/",
+      gitlink : "https://github.com/Chinmay-biswas/Hot-Corner",
       about: "the game is devloped by me by the the help of unity game engine",
-      bgColor: "#3884d3",
+      bgColor: "#c4701a",
       image:isMobile?photo2:img2
     },
     {
@@ -87,7 +88,7 @@ const activeProject = projects[activeIndex];
 return(
   <section id="projects"
   ref={sceneRef}
-  className="relative text-white"
+  className="relative text-white "
   style={{
     height :`${100*projects.length}vh`,
     backgroundColor:activeProject.bgColor,
@@ -142,18 +143,34 @@ return(
               h-[62vh] sm:h-[66vh]`}
               style={{zIndex:10, transition:"box-shadow 250ms ease"}}
               >
-              <img src={project.image} alt={project.title}
-              className="w-full h-full object-cover drop-shadow-xl md:drop-shadow-2xl"
-              style={{
-                position:"relative",
-                zIndex:10,
-                filter:"drop-shadow(0,16px 40px rgba(0,0,0,0,65)",
-                transition:"filter 200ms ease",
-
-              }}
-              loading="lazy"
-              
-              />
+              {project.video ? (
+  <iframe
+  src={`${project.video}?playsinline=1&rel=0&vq=hd1080`}
+  title={project.title}
+  className="w-full h-full"
+  style={{
+    position: "relative",
+    zIndex: 10,
+    border: "none",
+    borderRadius: "inherit",
+  }}
+  allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+  allowFullScreen
+/>
+) : (
+  <img
+    src={project.image}
+    alt={project.title}
+    className="w-full h-full object-cover drop-shadow-xl md:drop-shadow-2xl"
+    style={{
+      position: "relative",
+      zIndex: 10,
+      filter: "drop-shadow(0 16px 40px rgba(0,0,0,0.65))",
+      transition: "filter 200ms ease",
+    }}
+    loading="lazy"
+  />
+)}
               <div className="pointer-events-none absolute inset-0"
               style={{zIndex:11,
                 background:"linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0) 40%)"
@@ -166,33 +183,41 @@ return(
         ))}
       </div>
 
-        <motion.p
+        
+
+      
+      <div className={`flex flex-row sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start absolute left-1/2 -translate-x-1/2 z-30 
+        ${isMobile?"bottom-10":"bottom-10"}`}>
+                  <a href={activeProject?.link} 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center rounded-lg bg-white text-black 
+                  font-semibold px-5 py-3 hover:bg-gray-200 transition hover:scale-95"
+                  >Live Demo</a>
+                  <a href={activeProject?.gitlink}
+                  target="_blank"
+                  rel="noopener noreferrer" 
+                  className="inline-flex items-center justify-center rounded-lg bg-transparent text-white 
+                  font-semibold px-5 py-3 border-2 border-white hover:bg-white hover:text-black transition hover:scale-95"
+                  >Git Link</a>
+                  
+      </div>
+      <motion.p
           key={activeProject?.about}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.4 }}
           className={`absolute z-30 text-center text-white/90 max-w-2xl px-6 leading-relaxed ${
-            isMobile ? "bottom-28 text-sm" : "bottom-32 text-lg"
+            isMobile ? "bottom-6 text-sm" : "bottom-32 text-lg"
           }`}
         >
           {activeProject?.about}
         </motion.p>
-
       
-      <div className={`flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start absolute left-1/2 -translate-x-1/2 z-30 
-        ${isMobile?"bottom-10":"bottom-10"}`}>
-                  <a href={activeProject?.link} 
-                  target="_blank"
-                  rel="noopner noreferrer"
-                  className="inline-flex items-center justify-center rounded-lg bg-white text-black font-semibold px-5 py-3 hover:bg-gray-200 transition hover:scale-95">View Project</a>
-                  <a href={activeProject?.gitlink}
-                  target="_blank"
-                  rel="noopner noreferrer" 
-                  className="inline-flex items-center justify-center rounded-lg bg-transparent text-white font-semibold px-5 py-3 border-2 border-white hover:bg-white hover:text-black transition hover:scale-95">Get In Touch</a>
-      </div>
 
     </div>
+    
 
 
 

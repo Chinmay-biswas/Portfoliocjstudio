@@ -134,16 +134,16 @@ else if (deleting && subIndex === 0) {
             </motion.div>
 
             </motion.h1>
-            <motion.p className="mt-1 text-sm sm:text-sm md:text-md text-gray-300 max-w-2xl mx-auto lg:mx-0"
+            <motion.p className="mt-1 text-sm sm:text-sm md:text-md text-gray-300 max-w-3xl mx-auto lg:mx-0"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{delay:0.5,duration: 1.5}} 
             >
-              I’m a passionate developer and technology enthusiast focused on building modern, 
-              intelligent, and interactive digital experiences. With skills in MERN stack development, 
-              C++ programming, game development, and AI & ML, I enjoy turning creative ideas into real-world
-               applications that are both functional and impactful. I’m constantly learning, experimenting, and pushing 
-               my limits to create innovative solutions through code
+             I’m a 3rd-year B.Tech student at IIT Guwahati and a passionate developer focused on building immersive digital experiences through MERN stack development, 
+             game design, and emerging AI/ML technologies. 
+             From creating interactive Unity games with custom mechanics to building responsive web applications using the MERN stack, 
+             I enjoy turning ideas into practical and engaging digital experiences. I constantly explore new technologies, 
+             experiment with creative systems, and push myself to build projects that combine innovation, performance, and design.
             </motion.p>
 
             
@@ -154,7 +154,7 @@ else if (deleting && subIndex === 0) {
             transition={{delay:.7,duration: 1.3}} 
             >
               <a href="#projects" className="bg-linear-to-r from-[#1cd8d2] via-[#00bf8f] to-[#302b63] text-white px-5 py-3 rounded-full font-medium shadow-lg hover:scale-105 transition-all">
-                View My Work
+                Explore Projects
               </a>
                   <div className="relative group">
 
@@ -169,7 +169,7 @@ else if (deleting && subIndex === 0) {
   border border-gray-500 hover:bg-gray-700 
   transition-all duration-300"
 >
-  Resume ▸
+  Get Resume ▸
 </button>
 
   {/* Side Resume Cards */}

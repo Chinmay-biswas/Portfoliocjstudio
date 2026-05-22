@@ -9,9 +9,84 @@ export default function About() {
     "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[220px] h-[220px] opacity-10 blur-[100px] delay-200",
   ]
 
-  const stats=[{ label: "Projects", value: "7+" }, 
-    { label: "Strength", value: "Problem Solving by integrating multiple technologies" }, 
-    { label: "Speciality", value: "Work in any fields" }];
+  const achievements = [
+  {
+    label: "🏆 IITG GameJam",
+    value: "Runner-Up for developing a complete Unity-based game"
+  },
+
+  {
+    label: "🎮 IGDC Competition",
+    value: "Built and led the development of Pheneon Quest"
+  },
+
+  {
+    label: "💻 DSA & Competitive Coding",
+    value: "Active problem solving on LeetCode & Codeforces"
+  },
+
+  {
+    label: "🚀 AI-Powered Systems",
+    value: "Currently integrating recommendation systems using AI/ML"
+  },
+
+  {
+    label: "⚡ Leadership",
+    value: "Led teams and managed end-to-end game development projects"
+  },
+
+  {
+    label: "🧠 Fast Learner",
+    value: "Adapted across game development, web development, and AI/ML"
+  }
+];
+
+const stats = [
+  {
+    label: "Frontend",
+    value: "React.js • Tailwind CSS • JavaScript • HTML/CSS"
+  },
+
+  {
+    label: "Backend",
+    value: "Node.js • Express.js • MongoDB • REST APIs"
+  },
+
+  {
+    label: "Game Development",
+    value: "Unity • C# • Gameplay Systems • Level Design"
+  },
+
+  {
+    label: "AI/ML",
+    value: "Python • Machine Learning • Recommendation Systems"
+  },
+
+  {
+    label: "Programming",
+    value: "C++ • DSA • LeetCode • Codeforces"
+  },
+
+  {
+    label: "Tools",
+    value: "Git • GitHub • Canva • Kaggle • Postman"
+  },
+
+  {
+    label: "Platforms",
+    value: "Google Colab • Jupyter Notebook • Anaconda • Vercel"
+  },
+
+  {
+    label: "Deployment",
+    value: "Vercel • Render • Netlify • GitHub Pages"
+  },
+
+  {
+  label: "Creative & Design",
+  value: "Canva • UI Design • Video Editing • HiPaint • Creative Workflows"
+}
+];
 
   return (
     <section id='about'
@@ -59,7 +134,7 @@ export default function About() {
                   Chinmay Biswas
                 </h2>
                 <p className="mt-2 text-lg sm:text-xl text-gray-300 font-semibold hover:scale-102 transition">
-                   web developer | open source enthusiast | lifelong learner
+                  Unity Game Developer | MERN Stack Developer | AI/ML Explorer | DSA Enthusiast
                 </p>
                 <p className="mt-4 text-gray-400 max-w-2xl md:max-w-3xl leading-relaxed sm:text-lg">
                   I'm a passionate web developer with a knack for crafting beautiful and functional websites. With expertise in React, Tailwind CSS, and JavaScript, I create seamless user experiences. I thrive on learning new technologies and contributing to open source projects. Let's build something amazing together!
@@ -69,12 +144,12 @@ export default function About() {
                   {stats.map((item,i) => (
 
                     <motion.div key={i} className="border-2 border-white/10 px-4 py-3 
-                    text-center rounded-xl inline-block hover:scale-105 transition"
+                    text-center rounded-xl inline-block hover:scale-105 hover:border-white transition"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{opacity:1,y:0}}
                     
-                    transition={{delay:(i*0.3),duration:0.4}}
-                    viewport={{amount:0.6}}>
+                    transition={{delay:(i*0.2),duration:0.1}}
+                    viewport={{amount:0.2}}>
                       <div className=" font-semibold text-white text-lg hover:scale-103 transition">
                         {item.label}</div>
                         <div className="text-mauve-400  mt-2 hover:scale-103 transition">
@@ -87,8 +162,15 @@ export default function About() {
                 </div>
 
                 <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
-                  <a href="#projects" className="inline-flex items-center justify-center rounded-lg bg-white text-black font-semibold px-5 py-3 hover:bg-gray-200 transition hover:scale-95">View Project</a>
-                  <a href="#contact" className="inline-flex items-center justify-center rounded-lg bg-transparent text-white font-semibold px-5 py-3 border-2 border-white hover:bg-white hover:text-black transition hover:scale-95">Get In Touch</a>
+                  <a href="#projects" className="inline-flex items-center justify-center rounded-lg bg-white
+                   text-black font-semibold px-5 py-3 hover:bg-gray-200 transition hover:scale-95"
+                   >See My Work</a>
+
+
+                  <a href="#contact" className="inline-flex items-center justify-center rounded-lg bg-transparent
+                   text-white font-semibold px-5 py-3 border-2 border-white hover:bg-white
+                    hover:text-black transition hover:scale-95"
+                    >Let’s Connect</a>
                 </div>
 
               </div>
@@ -108,14 +190,46 @@ export default function About() {
                       
                       About Me </h3>
                       <p className="text-gray-300 leading-relaxed text-base sm:text-lg">
-                        i am a software developer with a passion for creating innovative and efficient solutions. With a strong background in computer science and experience in various programming languages, I enjoy tackling complex problems and building applications that make a difference. I am always eager to learn new technologies and collaborate with like-minded individuals to bring ideas to life.
+                        I’m Chinmay Biswas, a 3rd-year B.Tech student at IIT Guwahati who enjoys building creative and impactful digital experiences through development, design, 
+                        and problem-solving. My journey started with game development in Unity,where I explored storytelling, gameplay mechanics, and interactive system design, 
+                        eventually leading teams and developing projects like Echoes of Regret.
                       </p> 
                       <p className="mt-4 text-gray-400 text-base sm:text-lg">
-                        i love turning ideas into reality through code. Whether it's developing web applications, mobile apps, or software tools, I am dedicated to delivering high-quality and user-friendly solutions. I thrive in dynamic environments where I can continuously grow and contribute to meaningful projects.
+                        Over time, my interests expanded into MERN stack development, 
+                        where I started building scalable and responsive web applications such as Hot Corner, 
+                        a full-stack movie ticket booking platform. Currently, 
+                        I’m also exploring AI/ML technologies and working on integrating intelligent 
+                        recommendation systems into my projects to create smarter user experiences.
+
+                      </p>
+                      <p className="mt-4 text-gray-400 text-base sm:text-lg">
+                        I enjoy learning new technologies, adapting across different domains, and building complete products from idea to deployment. 
+                        Whether it’s game development, web applications, DSA problem solving on platforms like LeetCode and Codeforces, 
+                        or experimenting with AI-driven systems, I love pushing myself to continuously learn, create, and improve.
 
                       </p>
 
                   </motion.div>
+                  <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4  mx-w-xl">
+                  {achievements.map((item,i) => (
+
+                    <motion.div key={i} className="border-2 border-white/10 px-4 py-3 
+                    text-center rounded-xl inline-block hover:scale-105 hover:border-white transition"
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{opacity:1,y:0}}
+                    
+                    transition={{delay:(i*0.2),duration:0.1}}
+                    viewport={{amount:0.2}}>
+                      <div className=" font-semibold text-white text-lg hover:scale-103 transition">
+                        {item.label}</div>
+                        <div className="text-mauve-400  mt-2 hover:scale-103 transition">
+                          {item.value}
+                        </div>
+                      </motion.div>
+
+                  ))}
+
+                </div>
 
 
 
