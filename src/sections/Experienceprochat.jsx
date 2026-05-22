@@ -9,90 +9,131 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import ParticlesBackground from "../components/ParticlesBackground";
 
 const exps = [
-  {
-    role:"college start",
-    company:"first year",
-    duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+   {
+    role: "Technology Curiosity",
+    company: "Early Learning",
+    duration: "Before 2018",
+    description: "Developed curiosity about technology and started learning basic HTML, CSS, and Python while exploring how websites and digital systems work."
   },
+
   {
-    role:"college start",
-    company:"first year",
-    duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    role: "Creative Editing Journey",
+    company: "Design & Editing",
+    duration: "2020",
+    description: "Learned photo and video editing using tools like KineMaster, Canva, and PicsArt, which helped develop creativity and design sense."
   },
+
   {
-    role:"college start",
-    company:"first year",
-    duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    role: "School Education",
+    company: "Jawahar Navodaya Vidyalaya",
+    duration: "2018 - 2022",
+    description: "Completed 10th and 12th education while strengthening analytical thinking, discipline, and academic foundations."
   },
+
   {
-    role:"college start",
-    company:"first year",
-    duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    role: "JEE Advanced Preparation",
+    company: "GAIL Super 100",
+    duration: "2022 - 23",
+    description: "Selected for the GAIL Super 100 coaching program and prepared intensively for JEE Advanced."
   },
+
   {
-    role:"college start",
-    company:"first year",
+    role: "IIT Guwahati Journey",
+    company: "B.Tech in ECE",
     duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    description: "Started B.Tech at IIT Guwahati and began actively exploring multiple technology domains and development fields."
   },
+
   {
-    role:"college start",
-    company:"first year",
+    role: "Game Development Introduction",
+    company: "Kriti • Game Development Module",
     duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    description: "Participated in Kriti's Game Development Module and discovered a strong interest in Unity and interactive game systems."
   },
+
   {
-    role:"college start",
-    company:"first year",
-    duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    role: "Game Development Club",
+    company: "IIT Guwahati",
+    duration: "2023 - 24",
+    description: "Joined the Game Development Club and worked on multiple game projects while improving gameplay design and development skills."
   },
+
   {
-    role:"college start",
-    company:"first year",
-    duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    role: "Cybersecurity Club",
+    company: "IIT Guwahati",
+    duration: "2023 - 24",
+    description: "Participated in cybersecurity activities, worked on Capture The Flag projects, and helped conduct technical workshops."
   },
+
   {
-    role:"college start",
-    company:"first year",
+    role: "Programming Foundations",
+    company: "C++ & DSA",
     duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    description: "Started learning C++, problem solving, and core programming concepts to build strong technical foundations."
   },
+
   {
-    role:"college start",
-    company:"first year",
+    role: "First Unity Projects",
+    company: "Game Development",
     duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    description: "Built Unity prototypes and experimented with gameplay mechanics, animations, interactions, and level systems."
   },
+
   {
-    role:"college start",
-    company:"first year",
-    duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    role: "Pheneon Quest",
+    company: "IGDC Submission",
+    duration: "2024",
+    description: "Developed gameplay systems, combat mechanics, storyline integration, and overall technical implementation for a 2.5D action-adventure game."
   },
+
   {
-    role:"college start",
-    company:"first year",
-    duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    role: "Frontend Development",
+    company: "Web Development",
+    duration: "2024",
+    description: "Started learning React.js, Tailwind CSS, and responsive web development for creating modern user interfaces."
   },
+
   {
-    role:"college start",
-    company:"first year",
-    duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    role: "MERN Stack Journey",
+    company: "Full-Stack Development",
+    duration: "2024",
+    description: "Expanded into backend technologies including Node.js, Express.js, MongoDB, and REST APIs."
   },
+
   {
-    role:"college start",
-    company:"first year",
-    duration: "2023",
-    description: "participtate in kriti(Game Dev Module)",
+    role: "Echoes of Regret",
+    company: "Unity Game Project",
+    duration: "2025",
+    description: "Led the development team while also handling major gameplay coding, mechanics, systems integration, and project execution."
   },
+
+  {
+    role: "Kriti GameJam Achievement",
+    company: "IIT Guwahati",
+    duration: "2025",
+    description: "Secured runner-up position in Kriti GameJam by developing and submitting Echoes of Regret, a complete Unity-based game."
+  },
+
+  {
+    role: "Hot Corner",
+    company: "MERN Stack Project",
+    duration: "2025",
+    description: "Built a full-stack movie ticket booking platform with authentication, seat booking, admin dashboard, and responsive UI."
+  },
+
+  {
+    role: "AI/ML Exploration",
+    company: "Machine Learning",
+    duration: "2025",
+    description: "Started learning AI/ML concepts and integrating recommendation systems into projects for smarter user experiences."
+  },
+
+  {
+    role: "Competitive Coding",
+    company: "LeetCode & Codeforces",
+    duration: "Present",
+    description: "Regularly practice DSA and competitive programming to improve logical thinking and problem-solving abilities."
+  }
 ];
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);

@@ -35,7 +35,7 @@ export default function App() {
       <Skills/>
       <Projects/>
       <Experienceprochat/>
-      <Testimonials/>
+      {/*<Testimonials/>*/}
       <Contact/>
       <Footer/>
     </div>

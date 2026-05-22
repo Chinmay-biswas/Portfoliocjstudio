@@ -139,11 +139,10 @@ else if (deleting && subIndex === 0) {
             animate={{ opacity: 1, y: 0 }}
             transition={{delay:0.5,duration: 1.5}} 
             >
-             I’m a 3rd-year B.Tech student at IIT Guwahati and a passionate developer focused on building immersive digital experiences through MERN stack development, 
-             game design, and emerging AI/ML technologies. 
-             From creating interactive Unity games with custom mechanics to building responsive web applications using the MERN stack, 
-             I enjoy turning ideas into practical and engaging digital experiences. I constantly explore new technologies, 
-             experiment with creative systems, and push myself to build projects that combine innovation, performance, and design.
+             I’m a 3rd-year B.Tech student at IIT Guwahati and a passionate developer interested in MERN stack development, 
+             game design, and emerging AI/ML technologies. From building interactive Unity games to developing responsive web applications,
+              I enjoy turning ideas into creative and practical digital experiences while continuously exploring 
+              new technologies and improving my skills.
             </motion.p>
 
             

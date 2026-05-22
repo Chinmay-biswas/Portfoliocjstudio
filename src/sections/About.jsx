@@ -74,7 +74,7 @@ const stats = [
 
   {
     label: "Platforms",
-    value: "Google Colab • Jupyter Notebook • Anaconda • Vercel"
+    value: "Google Colab • Jupyter Notebook • Anaconda • Vercel • Clerk"
   },
 
   {

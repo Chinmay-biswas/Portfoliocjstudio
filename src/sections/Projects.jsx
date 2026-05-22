@@ -40,7 +40,7 @@ export default function Projects(){
       title:"Echoes Of Regret" ,
       link : "https://chinmaybiswas475.itch.io/echoes-of-regret",
       gitlink : "https://github.com/Chinmay-biswas/Echoes-of-Regret",
-      about: "the game is devloped by me by the the help of unity game engine",
+      about: "A Unity game with immersive storytelling and atmospheric gameplay.",
       bgColor: "#9b1b1b",
       video:"https://www.youtube.com/embed/lFwUZPDMnK0",
       image:isMobile?photo1:img1
@@ -49,17 +49,9 @@ export default function Projects(){
       title:"Hot-Corner" ,
       link : "https://hot-corner.vercel.app/",
       gitlink : "https://github.com/Chinmay-biswas/Hot-Corner",
-      about: "the game is devloped by me by the the help of unity game engine",
+      about: "A modern movie ticket booking web app built with React and Node.js.",
       bgColor: "#c4701a",
       image:isMobile?photo2:img2
-    },
-    {
-      title:"Hungry Tiger" ,
-      link : "http://www.nk.studio/",
-      gitlink : "http://www.nk.studio/",
-      about: "the game is devloped by me by the the help of unity game engine",
-      bgColor: "#dc9317",
-      image:isMobile?photo3:img3
     }
   ],
     [isMobile]
@@ -100,7 +92,7 @@ return(
       <h2 className={`text-3xl font-semibold z-10 text-center ${
         isMobile?"mt-4" : "mt-8"
       }`}>
-        MY WORK 
+        MY PROJECTS
       </h2>
 
       <div className={`relative w-full flex flex-1 items-center justify-center ${
