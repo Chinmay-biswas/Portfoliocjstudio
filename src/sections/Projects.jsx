@@ -186,19 +186,19 @@ return(
         
 
       
-      <div className={`flex flex-row sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start absolute left-1/2 -translate-x-1/2 z-30 
-        ${isMobile?"bottom-10":"bottom-10"}`}>
+      <div className={`flex flex-row sm:flex-row gap-3 sm:gap-4 justify-center  md:justify-start absolute left-1/2 -translate-x-1/2 z-30 
+        ${isMobile?"bottom-18":"bottom-10"}`}>
                   <a href={activeProject?.link} 
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center rounded-lg bg-white text-black 
-                  font-semibold px-5 py-3 hover:bg-gray-200 transition hover:scale-95"
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-lg
+                   bg-white text-black font-semibold px-5 py-3 hover:bg-gray-200 transition hover:scale-95"
                   >Live Demo</a>
                   <a href={activeProject?.gitlink}
                   target="_blank"
                   rel="noopener noreferrer" 
-                  className="inline-flex items-center justify-center rounded-lg bg-transparent text-white 
-                  font-semibold px-5 py-3 border-2 border-white hover:bg-white hover:text-black transition hover:scale-95"
+                  className="inline-flex items-center justify-center whitespace-nowrap rounded-lg bg-transparent
+                   text-white font-semibold px-5 py-3 border-2 border-white hover:bg-white hover:text-black transition hover:scale-95"
                   >Git Link</a>
                   
       </div>
@@ -209,7 +209,7 @@ return(
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.4 }}
           className={`absolute z-30 text-center text-white/90 max-w-2xl px-6 leading-relaxed ${
-            isMobile ? "bottom-6 text-sm" : "bottom-32 text-lg"
+            isMobile ? "bottom-4 text-sm" : "bottom-32 text-lg"
           }`}
         >
           {activeProject?.about}

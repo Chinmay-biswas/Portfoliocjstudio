@@ -27,7 +27,7 @@ export default function About() {
 
   {
     label: "🚀 AI-Powered Systems",
-    value: "Currently integrating recommendation systems using AI/ML"
+    value: "Currently integrating suggestion systems using AI/ML"
   },
 
   {
@@ -59,7 +59,7 @@ const stats = [
 
   {
     label: "AI/ML",
-    value: "Python • Machine Learning • Recommendation Systems"
+    value: "Python • Machine Learning • Suggestion Systems"
   },
 
   {
@@ -199,7 +199,7 @@ const stats = [
                         where I started building scalable and responsive web applications such as Hot Corner, 
                         a full-stack movie ticket booking platform. Currently, 
                         I’m also exploring AI/ML technologies and working on integrating intelligent 
-                        recommendation systems into my projects to create smarter user experiences.
+                        suggestion systems into my projects to create smarter user experiences.
 
                       </p>
                       <p className="mt-4 text-gray-400 text-base sm:text-lg">
