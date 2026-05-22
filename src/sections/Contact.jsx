@@ -297,7 +297,7 @@ const handelSubmit = async(e)=>{
             </div>
 
             <div className="flex flex-col">
-              <label className="mb-1">Message<span className="text-red-500">*</span></label>
+              <label className="mb-1">Message</label>
               <textarea 
               name="message"
               rows={4}
