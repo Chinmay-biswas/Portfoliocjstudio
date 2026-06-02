@@ -59,7 +59,7 @@ export default function Projects(){
   title: "WhatsApp Chat Analyzer",
   link: "https://whatsapp-chat-analyzer-iszd.onrender.com/",
   gitlink: "https://github.com/Chinmay-biswas/WhatsApp_Chat_Analyzer",
-  about: "An NLP-powered WhatsApp chat analysis tool that provides message statistics, activity timelines, word frequency insights, emoji analysis, and user engagement visualizations.",
+  about: "Analyze chats with statistics,activity trends,emoji analysis,visual insights.",
   bgColor: "#09052e",
   image: isMobile ? photo4 : photo5
 }
