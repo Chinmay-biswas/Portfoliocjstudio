@@ -52,7 +52,7 @@ export default function Projects(){
       link : "https://hot-corner.vercel.app/",
       gitlink : "https://github.com/Chinmay-biswas/Hot-Corner",
       about: "A modern movie ticket booking web app built with React and Node.js.",
-      bgColor: "#c4701a",
+      bgColor: "#062454",
       image:isMobile?photo2:img2
     },
     {
