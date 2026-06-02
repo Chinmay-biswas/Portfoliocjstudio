@@ -52,7 +52,7 @@ export default function Projects(){
       link : "https://hot-corner.vercel.app/",
       gitlink : "https://github.com/Chinmay-biswas/Hot-Corner",
       about: "A modern movie ticket booking web app built with React and Node.js.",
-      bgColor: "#062454",
+      bgColor: "#96621a",
       image:isMobile?photo2:img2
     },
     {
@@ -60,7 +60,7 @@ export default function Projects(){
   link: "https://whatsapp-chat-analyzer-iszd.onrender.com/",
   gitlink: "https://github.com/Chinmay-biswas/WhatsApp_Chat_Analyzer",
   about: "An NLP-powered WhatsApp chat analysis tool that provides message statistics, activity timelines, word frequency insights, emoji analysis, and user engagement visualizations.",
-  bgColor: "#25D366",
+  bgColor: "#09052e",
   image: isMobile ? photo4 : photo5
 }
   ],
