@@ -7,7 +7,7 @@ import img1 from "../assets/img1.JPG"
 import img2 from "../assets/img2.JPG"
 import img3 from "../assets/img3.JPG"
 import photo5 from "../assets/photo5.png"
-import photo4 from "../assets/photo4.png"
+import photo4 from "../assets/photo4.jpeg"
 
 
 const useIsMobile = (query="(max-width:639px)")=>{
