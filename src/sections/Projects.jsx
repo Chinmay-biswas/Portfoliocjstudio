@@ -6,6 +6,8 @@ import photo3 from "../assets/photo3.png"
 import img1 from "../assets/img1.JPG"
 import img2 from "../assets/img2.JPG"
 import img3 from "../assets/img3.JPG"
+import photo5 from "../assets/photo5.png"
+import photo4 from "../assets/photo4.png"
 
 
 const useIsMobile = (query="(max-width:639px)")=>{
@@ -52,7 +54,15 @@ export default function Projects(){
       about: "A modern movie ticket booking web app built with React and Node.js.",
       bgColor: "#c4701a",
       image:isMobile?photo2:img2
-    }
+    },
+    {
+  title: "WhatsApp Chat Analyzer",
+  link: "https://whatsapp-chat-analyzer-iszd.onrender.com/",
+  gitlink: "https://github.com/Chinmay-biswas/WhatsApp_Chat_Analyzer",
+  about: "An NLP-powered WhatsApp chat analysis tool that provides message statistics, activity timelines, word frequency insights, emoji analysis, and user engagement visualizations.",
+  bgColor: "#25D366",
+  image: isMobile ? photo4 : photo5
+}
   ],
     [isMobile]
 );
