@@ -133,6 +133,18 @@ const exps = [
     company: "LeetCode & Codeforces",
     duration: "Present",
     description: "Regularly practice DSA and competitive programming to improve logical thinking and problem-solving abilities."
+  },
+  {
+    role: "ML Completed",
+    company: "Machine Learning",
+    duration: "2025",
+    description: "made two small projects and starting AI from now on from youtube channel campusX."
+  },
+  {
+    role:"Got an Intern",
+    company:"SoundVerse.ai",
+    duration:"currently doing",
+    description:"i will add a brief details about how i got my first intern"
   }
 ];
 
@@ -352,7 +364,7 @@ export default function Experienceprochat() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const SCEN_HEIGHT_VH = 120 * Math.max(exps.length - 1, 1);
+  const SCEN_HEIGHT_VH = 30 * Math.max(exps.length - 1, 1);
 
   const { scrollYProgress } = useScroll({
     target: sceneRef,
