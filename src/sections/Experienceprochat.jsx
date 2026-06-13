@@ -159,7 +159,7 @@ function DesktopExpItem({
   scrollYProgress,
 }) {
   const centerOffset = (visibleCount - 1) / 2;
-  const width = visibleCount >= 4 ? 270 : 320;
+  const width = visibleCount >= 4 ? 270 : 400;
   const gap = visibleCount >= 4 ? 285 : 345;
   const isTop = absoluteIdx % 2 !== 0;
   const x = useTransform(scrollYProgress, (latest) => {
@@ -276,7 +276,7 @@ function DesktopExpItem({
         className={`absolute ${
           isTop ? "top-12" : "bottom-12"
         } bg-gray-900/80 backdrop-blur border border-gray-700/70 rounded-xl p-7 shadow-lg`}
-        style={{ width, maxWidth: "90vw" }}
+        style={{ width: "400px", maxWidth: "450px" }}
         initial={false}
         transition={{
           duration: 0.8,
