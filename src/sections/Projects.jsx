@@ -43,7 +43,7 @@ export default function Projects(){
       link : "https://chinmaybiswas475.itch.io/echoes-of-regret",
       gitlink : "https://github.com/Chinmay-biswas/Echoes-of-Regret",
       about: "A Unity game with immersive storytelling and atmospheric gameplay.",
-      bgColor: "#9b1b1b",
+      bgColor: "#000000",
       video:"https://www.youtube.com/embed/lFwUZPDMnK0",
       image:isMobile?photo1:img1
     },
@@ -52,7 +52,7 @@ export default function Projects(){
       link : "https://hot-corner.vercel.app/",
       gitlink : "https://github.com/Chinmay-biswas/Hot-Corner",
       about: "A modern movie ticket booking web app built with React and Node.js.",
-      bgColor: "#96621a",
+      bgColor: "#000000",
       image:isMobile?photo2:img2
     },
     {
@@ -60,7 +60,7 @@ export default function Projects(){
   link: "https://whatsapp-chat-analyzer-iszd.onrender.com/",
   gitlink: "https://github.com/Chinmay-biswas/WhatsApp_Chat_Analyzer",
   about: "Analyze chats with statistics,activity trends,emoji analysis,visual insights.",
-  bgColor: "#09052e",
+  bgColor: "#000000",
   image: isMobile ? photo4 : photo5
 }
   ],
@@ -99,7 +99,7 @@ return(
 
 
     <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
-      <h2 className={`text-3xl font-semibold z-10 text-center ${
+      <h2 className={`text-3xl font-semibold z-10 text-center bg-gradient-to-r from-[#6B27B0] via-[#9b4de0] to-[#6B27B0] bg-clip-text text-transparent ${
         isMobile?"mt-4" : "mt-8"
       }`}>
         MY PROJECTS
@@ -123,7 +123,7 @@ return(
                 animate={{opacity:1,y:0}}
                 exit={{opacity:0,y:30}}
                 transition={{duration:.5,ease:"easeOut"}}
-                className={`block text-center text-[clamp(2rem,6vw,5rem)] text-white/95 sm:absolute sm:-top-20 sm:left-[35%] lg:left-[-5%] sm:mb-0 italic font-semibold ${
+                className={`block text-center text-[clamp(2rem,6vw,5rem)] bg-gradient-to-r from-[#6B27B0] via-[#9b4de0] to-[#6B27B0] bg-clip-text text-transparent sm:absolute sm:-top-20 sm:left-[35%] lg:left-[-5%] sm:mb-0 italic font-semibold ${
                   isMobile?"-mt-24": ""
                 } `}
                 style={{zIndex:5,

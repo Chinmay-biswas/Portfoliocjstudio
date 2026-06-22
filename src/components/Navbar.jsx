@@ -98,7 +98,7 @@ export default function Navbar(){
             </div>
 
             <div className="hidden lg:block">
-                <a href="#contact" className="bg-linear-to-r from-pink-300 to-purple-900 text-black px-5 py-2 rounded-full font-medium shadow-lg hover:opacity-90 transition-opacity duration-300">
+                <a href="#contact" className="bg-linear-to-r from-[#b05ce0] via-[#7b32c0] to-[#4e0480] text-white px-5 py-2 rounded-full font-medium shadow-lg hover:opacity-90 transition-opacity duration-300">
                     Reach Out
                 </a>
 

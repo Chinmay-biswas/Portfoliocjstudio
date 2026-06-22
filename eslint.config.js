@@ -19,6 +19,7 @@ export default defineConfig([
     },
     rules: {
       'no-unused-vars': 'off',
+      "no-unused-expressions": "off",
     },
   },
 ])

@@ -97,7 +97,7 @@ const stats = [
       <div className="absolute inset-0 pointer-events-none">
         {glows.map((c,i)=>(
           <div key={i}
-          className={`absolute rounded-full bg-gradient-to-r from-[#1cd8d2] via-[#00bf8f] to-[#302b63] animate-pulse ${c}`}/>
+          className={`absolute rounded-full bg-gradient-to-r  from-[#b05ce0] via-[#7b32c0] to-[#4e0480] animate-pulse ${c}`}/>
         ))}</div>
 
           <div className="relative z-10 max-w-6xl w-full mx-auto px-6 md:px-10 lg:px-12 py-20 flex flex-col  gap-12">
@@ -112,7 +112,7 @@ const stats = [
           
 
               <motion.div className="relative w-[160px] h-[220px] md:w-[200px] md:h-[320px]
-              rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-[#1cd8d2]/20  to-[#302b63]/20 
+              rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-[#b05ce0] via-[#7b32c0] to-[#4e0480]
               border-[#1cd8d2]/25 "
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
@@ -129,7 +129,7 @@ const stats = [
                   transition={{duration: 1}}
                   viewport={{ amount:0.4}}>
                   <h2 className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent 
-                  bg-gradient-to-r from-[#1cd8d2] to-[#b2e0d7] hover:scale-102 transition"
+                  bg-gradient-to-r  from-[#b05ce0] via-[#7b32c0] to-[#4e0480] hover:scale-102 transition"
                  >
                   Chinmay Biswas
                 </h2>

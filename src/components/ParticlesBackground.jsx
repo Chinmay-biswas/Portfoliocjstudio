@@ -11,7 +11,7 @@ useEffect(()=>{
 
     let particles =[];
     const particleCount =50;
-    const colors = ['#ff4d4d', '#4dff4d', '#4d4dff', '#ffff4d', '#ff4dff'];
+    const colors = ['#6B27B0'];
 
     class Particle{
         constructor(){

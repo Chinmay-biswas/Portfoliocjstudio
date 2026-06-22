@@ -5,6 +5,7 @@ import ParticlesBackground from "../components/ParticlesBackground";
 import { hover } from "framer-motion";
 import avator from "../assets/avator.png"
 import { motion, AnimatePresence } from "framer-motion";
+import BottomWaves from "../components/BottomWaves";
 
 
 
@@ -71,10 +72,11 @@ else if (deleting && subIndex === 0) {
   return (
     <section id="home" className="w-full h-screen relative bg-black overflow-visible">
       <ParticlesBackground/>
+      <BottomWaves/>
 
       <div className="absolute inset-0">
 
-              <div
+              {/* <div
               className="absolute -top-32 -left-32 
               w-[70vw] sm:w-[50vw] md:w-[40vw] 
               h-[70vw] sm:h-[50vw] md:h-[40vw]
@@ -97,7 +99,7 @@ else if (deleting && subIndex === 0) {
               blur-[100px] sm:blur-[130px] md:blur-[150px]
               animate-pulse delay-1000"
             >
-            </div>
+            </div> */}
       </div>
 
       <div className="relative z-10 h-full w-full max-w-7xl mx-auto px-4 grid grid-cols-1 lg:grid-cols-2 ">
@@ -108,7 +110,7 @@ else if (deleting && subIndex === 0) {
             
 
             <motion.h1 className=" mt-13 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-clip-text
-            bg-gradient-to-r from-[#1cd8d2] via-[#00bf8f] to-[#302b63] text-transparent"
+            bg-gradient-to-r from-[#b05ce0] via-[#7b32c0] to-[#4e0480] text-transparent"
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{duration: 2}} 
@@ -152,7 +154,7 @@ else if (deleting && subIndex === 0) {
             animate={{ opacity: 1, y: 0 }}
             transition={{delay:.7,duration: 1.3}} 
             >
-              <a href="#projects" className="bg-linear-to-r from-[#1cd8d2] via-[#00bf8f] to-[#302b63] text-white px-5 py-3 rounded-full font-medium shadow-lg hover:scale-105 transition-all">
+              <a href="#projects" className="bg-linear-to-r from-[#b05ce0] via-[#7b32c0] to-[#4e0480] text-white px-5 py-3 rounded-full font-medium shadow-lg hover:scale-105 transition-all">
                 Explore Projects
               </a>
                   <div className="relative group">
@@ -285,7 +287,7 @@ grid-cols-2 gap-3 w-[420px]
                           right: "10px",width:"min(30vw , 900px)", minHeight:"min(30vw , 750px)", borderRadius:"50%",
                           filter: "blur(38px)",
                           opacity: 0.32,
-                          background:"conic-gradient(from 0deg, #1cd8d2,  #00bf8f,#302b63,#1cd8d2)"
+                          background: "conic-gradient(from 0deg, #6B27B0, #3d1566, #9b4de0, #6B27B0)"
                         
                         }}
                       />
