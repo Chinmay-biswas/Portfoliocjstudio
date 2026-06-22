@@ -8,6 +8,7 @@ import img2 from "../assets/img2.JPG"
 import img3 from "../assets/img3.JPG"
 import photo5 from "../assets/photo5.png"
 import photo4 from "../assets/photo4.jpeg"
+import ParticleNetwork from "../components/ParticleNetwork";
 
 
 const useIsMobile = (query="(max-width:639px)")=>{
@@ -88,6 +89,7 @@ useMotionValueEvent(scrollYProgress, "change", (v) => {
 const activeProject = projects[activeIndex];
 
 return(
+  
   <section id="projects"
   ref={sceneRef}
   className="relative text-white "
@@ -97,7 +99,7 @@ return(
     transition:"background-color 400ms ease"
   }}>
 
-
+  <ParticleNetwork/>
     <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
       <h2 className={`text-3xl font-semibold z-10 text-center bg-gradient-to-r from-[#6B27B0] via-[#9b4de0] to-[#6B27B0] bg-clip-text text-transparent ${
         isMobile?"mt-4" : "mt-8"
@@ -124,7 +126,7 @@ return(
                 exit={{opacity:0,y:30}}
                 transition={{duration:.5,ease:"easeOut"}}
                 className={`block text-center text-[clamp(2rem,6vw,5rem)] bg-gradient-to-r from-[#6B27B0] via-[#9b4de0] to-[#6B27B0] bg-clip-text text-transparent sm:absolute sm:-top-20 sm:left-[35%] lg:left-[-5%] sm:mb-0 italic font-semibold ${
-                  isMobile?"-mt-24": ""
+                  isMobile?"-mt-24": "-mt-5"
                 } `}
                 style={{zIndex:5,
                   textAlign: isMobile?"center":"left"

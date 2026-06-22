@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export default function ParticleNetwork({ color = "#ffffff" }) {
+export default function ParticleNetwork({ color = "#ffffff", opacity = 1  }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -55,7 +55,8 @@ export default function ParticleNetwork({ color = "#ffffff" }) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = color;
-        ctx.globalAlpha =2;
+        // particle dots
+        ctx.globalAlpha = 0.55 * opacity;
         ctx.fill();
       });
 
@@ -69,7 +70,8 @@ export default function ParticleNetwork({ color = "#ffffff" }) {
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
             ctx.strokeStyle = color;
-            ctx.globalAlpha = (1 - distance / 145) * 1;
+            // particle-to-particle lines
+            ctx.globalAlpha = (1 - distance / 145) * 0.28 * opacity;
             ctx.lineWidth = 2;
             ctx.stroke();
           }
@@ -82,7 +84,8 @@ export default function ParticleNetwork({ color = "#ffffff" }) {
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(pointer.x, pointer.y);
           ctx.strokeStyle = color;
-          ctx.globalAlpha = (1 - pointerDistance / 160) * 1;
+          // cursor-to-particle lines
+          ctx.globalAlpha = (1 - pointerDistance / 160) * 0.8 * opacity;
           ctx.lineWidth = 2;
           ctx.stroke();
         }

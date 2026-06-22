@@ -1,6 +1,7 @@
 import { LuSparkles } from "react-icons/lu";
 import { motion } from "framer-motion";
 import { portfolioDefaults } from "../data/portfolioDefaults";
+import ParticleNetwork from "../components/ParticleNetwork";
 
 const deviconMap = {
   Java: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
@@ -68,6 +69,7 @@ export default function Skills({ content = portfolioDefaults }) {
       id="skills"
       className="relative w-full overflow-hidden bg-[#09090e] px-5 py-20 text-white md:px-10"
     >
+      <ParticleNetwork color="#6E0DD1" opacity={.6}/>
       <div className="pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(107,39,176,0.2),transparent_32%),radial-gradient(circle_at_85%_60%,rgba(107,39,176,0.14),transparent_30%)]" />
         <div className="absolute inset-0 opacity-[0.06] bg-[linear-gradient(90deg,#6B27B0_1px,transparent_1px),linear-gradient(#fff_1px,transparent_1px)] bg-[size:42px_42px]" />
@@ -117,9 +119,9 @@ export default function Skills({ content = portfolioDefaults }) {
                 {category.skills.map((skill) => (
                   <div
                     key={skill}
-                    className="group flex items-center gap-4 rounded-lg border border-white/10 bg-[#0c0c13]/90 px-5 py-4 shadow-[0_18px_45px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:border-[#1DCD9F]/70 hover:bg-[#1DCD9F]/10"
+                    className="group flex items-center gap-4 rounded-lg border border-[#045C0A]/70 bg-[#045C0A]/10 px-5 py-4 shadow-[0_18px_45px_rgba(0,0,0,0.28)] transition-all duration-300 hover:-translate-y-1 hover:border-[#1DCD9F]/70 hover:bg-[#1DCD9F]/10"
                   >
-                    <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-white/10 bg-black/35 text-2xl text-[#1DCD9F] transition-all duration-300 group-hover:border-[#1DCD9F]/60 group-hover:shadow-[0_0_24px_rgba(29,205,159,0.35)]">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-lg border border-[#045C0A]/70 bg-[#045C0A]/10 text-2xl text-[#1DCD9F] shadow-[0_0_24px_rgba(29,205,159,0.35)] transition-all duration-300 group-hover:border-[#1DCD9F]/60 group-hover:text-[#1DCD9F] group-hover:shadow-[0_0_24px_rgba(29,205,159,0.35)]">
                       {deviconMap[skill] ? (
                         <img
                           src={deviconMap[skill]}

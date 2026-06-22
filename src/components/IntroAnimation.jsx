@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 export default function IntroAnimation({ onFinish }) {
   const greetings = useMemo(
-    () => ["hello", "hi", "hey", "welcome", "greetings", "salutations", "howdy"],
+    () => ["hello", "hi", "hey", "welcome", "greetings", "salutations"],
     []
   );
   const [index, setIndex] = useState(0);
@@ -49,7 +49,7 @@ export default function IntroAnimation({ onFinish }) {
   useEffect(() => {
     if (phase !== "approach") return;
 
-    const id = setTimeout(() => setPhase("settle"), 1500);
+    const id = setTimeout(() => setPhase("settle"), 2300);
     return () => clearTimeout(id);
   }, [phase]);
 
@@ -105,7 +105,7 @@ export default function IntroAnimation({ onFinish }) {
 
           {phase !== "greeting" && (
             <motion.div
-              className="flex items-baseline text-5xl font-bold leading-none tracking-tight md:text-8xl lg:text-9xl"
+              className="flex items-baseline text-4xl font-bold leading-none tracking-tight md:text-8xl lg:text-9xl"
               initial={{ opacity: 0, y: 48 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
@@ -141,24 +141,41 @@ export default function IntroAnimation({ onFinish }) {
               <CollapsingText hide={isCollapsing}>B</CollapsingText>
 
               <motion.span
-                className="inline-block overflow-visible align-baseline leading-none"
-                animate={{
-                  color: isFinal ? "#1DCD9F" : "#ffffff",
-                  width: showJ ? "0.58em" : "0.28em",
-                }}
-                transition={{ duration: showJ ? 1.05 : 0.65, ease: [0.4, 0, 0.2, 1] }}
-              >
-                <motion.span
-                  key={showJ ? "j" : "i"}
-                  className="inline-block align-baseline leading-none"
-                  initial={{ opacity: 0, y: showJ ? 18 : 0, rotateX: showJ ? -55 : 0 }}
-                  animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                  exit={{ opacity: 0, y: -18, rotateX: 55 }}
-                  transition={{ duration: showJ ? 1.05 : 0.65, ease: [0.4, 0, 0.2, 1] }}
-                >
-                  {showJ ? "J" : "i"}
-                </motion.span>
-              </motion.span>
+  className="inline-block overflow-visible align-baseline leading-none"
+  animate={{
+    color: isFinal ? "#1DCD9F" : "#ffffff",
+    width: showJ ? "0.58em" : "0.28em",
+  }}
+  transition={{ duration: showJ ? 1.05 : 0.65, ease: [0.4, 0, 0.2, 1] }}
+  style={{ perspective: 400 }}
+>
+  <motion.span
+    className="relative inline-block align-baseline leading-none"
+    style={{ transformStyle: "preserve-3d" }}
+    animate={{ rotateY: showJ ? 180 : 0 }}
+    transition={{ duration: 0.85, ease: [0.65, 0, 0.35, 1] }}
+  >
+    {/* front face — "i" */}
+    <span
+      className="inline-block"
+      style={{ backfaceVisibility: "hidden" }}
+    >
+      i
+    </span>
+
+    {/* right face — "J", pre-rotated 180° so it only faces forward once the cube turns */}
+    <span
+      className="absolute left-0 top-0 inline-block"
+      style={{
+        backfaceVisibility: "hidden",
+        transform: "rotateY(-180deg) translateX(-0.35em)",
+        transformOrigin: "center left",
+      }}
+    >
+      J
+    </span>
+  </motion.span>
+</motion.span>
 
               <CollapsingText hide={isCollapsing}>swas</CollapsingText>
             </motion.div>

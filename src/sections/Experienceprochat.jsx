@@ -257,14 +257,14 @@ function DesktopExpItem({
       }}
     >
       <motion.div
-        className="z-10 w-7 h-7 rounded-full bg-white shadow-[0_0_0_8px_rgba(255,255,255,0.13)]"
+        className="z-10 w-7 h-7 rounded-full bg-[#8B0FD9]/70 shadow-[0_0_0_12px_rgba(126,34,206,0.13)]"
         initial={{ opacity: 0, scale: 0.85 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       >
         <motion.div
-          className={`absolute ${isTop ? "-bottom-8" : "-top-8"} w-[3px] bg-white/40`}
+          className={`absolute ${isTop ? "-bottom-8" : "-top-8"} left-1  translate-x-2 w-[3px] bg-[#8B0FD9]/70 `}
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 40 }}
           exit={{ opacity: 0, height: 20 }}
@@ -322,7 +322,7 @@ function DesktopTimeline({ exps, scrollYProgress, visibleCount }) {
     <div className="relative w-full max-w-7xl">
       <div className="absolute left-0 right-0 top-1/2 z-0 h-[6px] -translate-y-1/2 bg-white/15 rounded shadow-[0_0_28px_rgba(255,255,255,0.16)]">
         <motion.div
-          className="absolute left-0 top-0 h-[6px] bg-white rounded origin-left shadow-[0_0_28px_rgba(255,255,255,0.75)]"
+          className="absolute left-0 top-0 h-[6px] bg-[#8B0FD9]/80 rounded origin-left shadow-[0_0_16px_rgba(255,255,255,0.75)]"
           style={{ width: lineSize }}
         />
       </div>
