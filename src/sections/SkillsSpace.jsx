@@ -338,13 +338,13 @@ export default function SkillsSpace({ content = portfolioDefaults }) {
       <div className="pointer-events-none absolute top-10 left-8 z-30 max-w-xl">
         <div className="mb-3 flex items-center gap-4 text-xs font-medium uppercase tracking-[0.22em] text-gray-400">
           <span className="h-px w-10 bg-gray-700" />
-          Skills, in orbit
+          Catch the Skill and check where i use that skill.
         </div>
         <h2 className="text-4xl font-extrabold text-white sm:text-5xl">
-          Catch a skill
+          CHINMAY BISWAS
         </h2>
         <p className="mt-4 text-sm leading-relaxed text-gray-400 sm:text-base">
-          Click on a floating skill to grab it. Let go to send it back into orbit.
+          Use Right click to catch.
         </p>
       </div>
 

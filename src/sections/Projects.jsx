@@ -102,13 +102,13 @@ return(
   <ParticleNetwork/>
     <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
       <h2 className={`text-3xl font-semibold z-10 text-center bg-gradient-to-r from-[#6B27B0] via-[#9b4de0] to-[#6B27B0] bg-clip-text text-transparent ${
-        isMobile?"mt-4" : "mt-8"
+        isMobile?"mt-4" : ""
       }`}>
         MY PROJECTS
       </h2>
 
       <div className={`relative w-full flex flex-1 items-center justify-center ${
-        isMobile?"-mt-4":" "
+        isMobile?"-mt-4":""
       }`}>
         {projects.map((project,idx)=>(
           <div key={project.title}
