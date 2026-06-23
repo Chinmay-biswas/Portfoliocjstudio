@@ -124,19 +124,21 @@ return(
 
   <ParticleNetwork/>
     <div className="sticky top-0 h-screen flex flex-col items-center justify-center">
-      {isMobile && (
-        <h2 className="text-3xl font-semibold z-10 bg-gradient-to-r from-[#6B27B0] via-[#9b4de0] to-[#6B27B0] bg-clip-text text-transparent mt-4 text-center w-full">
-          MY PROJECTS
-        </h2>
-      )}
+      <h2 className={`text-3xl font-semibold z-10 text-center bg-gradient-to-r from-[#6B27B0] via-[#9b4de0] to-[#6B27B0] bg-clip-text text-transparent ${
+        isMobile?"mt-4" : ""
+      }`}>
+        MY PROJECTS
+      </h2>
 
       {isMobile ? (
         <>
-          <div className="relative w-full flex flex-1 items-center justify-center -mt-4">
+          <div className={`relative w-full flex flex-1 items-center justify-center ${
+            isMobile?"-mt-4":""
+          }`}>
             {projects.map((project,idx)=>(
               <div key={project.title}
               className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ${
-                activeIndex ===idx?"opacity-100 z-20":"opacity-0 z-0"
+                activeIndex ===idx?"opacity-100 z-20":"opacity-0 z-0 sm:z-10"
               }`}
               style={{width:"85%",maxWidth:"1200px"}}>
 
@@ -148,9 +150,11 @@ return(
                     animate={{opacity:1,y:0}}
                     exit={{opacity:0,y:30}}
                     transition={{duration:.5,ease:"easeOut"}}
-                    className="block text-center text-[clamp(2rem,6vw,5rem)] bg-gradient-to-r from-[#6B27B0] via-[#9b4de0] to-[#6B27B0] bg-clip-text text-transparent italic font-semibold -mt-24"
+                    className={`block text-center text-[clamp(2rem,6vw,5rem)] bg-gradient-to-r from-[#6B27B0] via-[#9b4de0] to-[#6B27B0] bg-clip-text text-transparent sm:absolute sm:-top-20 sm:left-[35%] lg:left-[-5%] sm:mb-0 italic font-semibold ${
+                      isMobile?"-mt-24": "-mt-5"
+                    } `}
                     style={{zIndex:5,
-                      textAlign:"center"
+                      textAlign: isMobile?"center":"left"
                     }}
                     >
                   {project.title}
@@ -161,7 +165,11 @@ return(
 
                 </AnimatePresence>
 
-                <div className="relative w-full overflow-hidden bg-black/20 shadow-2xl mb-6 rounded-lg h-[62vh]"
+                <div className={`relative w-full overflow-hidden bg-black/20 shadow-2xl
+                  md:shadow-[0_35px_60px_-15px_rgba(0,0,0,0.7)]${
+                    isMobile?"mb-6 rounded-lg": "mb-10 sm:mb-12 rounded-xl"
+                  }
+                  h-[62vh] sm:h-[66vh]`}
                   style={{zIndex:10, transition:"box-shadow 250ms ease"}}
                   >
                   {project.video ? (
@@ -182,7 +190,7 @@ return(
       <img
         src={project.image}
         alt={project.title}
-        className="w-full h-full object-cover drop-shadow-xl"
+        className="w-full h-full object-cover drop-shadow-xl md:drop-shadow-2xl"
         style={{
           position: "relative",
           zIndex: 10,
@@ -204,19 +212,21 @@ return(
             ))}
           </div>
 
-          <div className="flex flex-row gap-3 justify-center absolute left-1/2 -translate-x-1/2 z-30 bottom-18">
-            <a href={activeProject?.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-lg
-             bg-white text-black font-semibold px-5 py-3 hover:bg-gray-200 transition hover:scale-95"
-            >Live Demo</a>
-            <a href={activeProject?.gitlink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center whitespace-nowrap rounded-lg bg-transparent
-             text-white font-semibold px-5 py-3 border-2 border-white hover:bg-white hover:text-black transition hover:scale-95"
-            >Git Link</a>
+          <div className={`flex flex-row sm:flex-row gap-3 sm:gap-4 justify-center  md:justify-start absolute left-1/2 -translate-x-1/2 z-30 
+            ${isMobile?"bottom-18":"bottom-10"}`}>
+                      <a href={activeProject?.link} 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center whitespace-nowrap rounded-lg
+                       bg-white text-black font-semibold px-5 py-3 hover:bg-gray-200 transition hover:scale-95"
+                      >Live Demo</a>
+                      <a href={activeProject?.gitlink}
+                      target="_blank"
+                      rel="noopener noreferrer" 
+                      className="inline-flex items-center justify-center whitespace-nowrap rounded-lg bg-transparent
+                       text-white font-semibold px-5 py-3 border-2 border-white hover:bg-white hover:text-black transition hover:scale-95"
+                      >Git Link</a>
+                      
           </div>
           <motion.p
               key={activeProject?.about}
@@ -224,7 +234,9 @@ return(
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.4 }}
-              className="absolute z-30 text-center text-white/90 max-w-2xl px-6 leading-relaxed bottom-4 text-sm"
+              className={`absolute z-30 text-center text-white/90 max-w-2xl px-6 leading-relaxed ${
+                isMobile ? "bottom-4 text-sm" : "bottom-32 text-lg"
+              }`}
             >
               {activeProject?.about}
             </motion.p>
@@ -323,7 +335,7 @@ return(
               <button
                 onClick={()=>setIsRailOpen(v=>!v)}
                 aria-label={isRailOpen ? "Hide project list" : "Show project list"}
-                className="absolute top-[45%] -translate-y-1/2 -right- lg:-right-10 z-30 flex items-center justify-center
+                className="absolute top-[45%] -translate-y-1/2 -right-3 lg:-right-4 z-30 flex items-center justify-center
                   w-7 h-12 rounded-md bg-white/[0.06] border border-white/15
                   hover:bg-white/15 transition-colors"
               >
@@ -347,7 +359,7 @@ return(
                   exit={{width:0,opacity:0}}
                   transition={{duration:.35,ease:"easeInOut"}}
                   style={{flex:"0 0 30%"}}
-                  className="relative min-w-0 max-w-[260px] lg:-right-6"
+                  className="relative min-w-0 max-w-[260px]"
                 >
                   <div className="relative h-full overflow-y-auto pr-1
                     [&::-webkit-scrollbar]:w-1.5

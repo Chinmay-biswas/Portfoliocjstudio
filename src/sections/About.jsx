@@ -148,8 +148,8 @@ const stats = [
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{opacity:1,y:0}}
                     
-                    transition={{delay:(i*0.2),duration:0.1}}
-                    viewport={{amount:0.2}}>
+                    transition={{delay:(i*0.1),duration:0.05}}
+                    viewport={{amount:0.1}}>
                       <div className=" font-semibold text-white text-lg hover:scale-103 transition">
                         {item.label}</div>
                         <div className="text-mauve-400  mt-2 hover:scale-103 transition">
@@ -218,8 +218,8 @@ const stats = [
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{opacity:1,y:0}}
                     
-                    transition={{delay:(i*0.2),duration:0.1}}
-                    viewport={{amount:0.2}}>
+                    transition={{delay:(i*0.1),duration:0.05}}
+                    viewport={{amount:0.1}}>
                       <div className=" font-semibold text-white text-lg hover:scale-103 transition">
                         {item.label}</div>
                         <div className="text-mauve-400  mt-2 hover:scale-103 transition">
