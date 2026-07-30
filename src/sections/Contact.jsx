@@ -7,11 +7,14 @@ const TEMPLATE_ID=import.meta.env.VITE_TEMPLATE_ID;
 const PUBLIC_KEY=import.meta.env.VITE_PUBLIC_KEY;
 import emailjs from "@emailjs/browser";
 import Astra from "../assets/Astra.png"
+import { portfolioDefaults } from "../data/portfolioDefaults";
 
 
 
 
-export default function Contact(){
+export default function Contact({ content = portfolioDefaults }){
+
+const section = { ...portfolioDefaults.contactSection, ...(content.contactSection || {}) };
 
 const [formData,setFormData]=useState({
   name:"",
@@ -103,7 +106,7 @@ const handelSubmit = async(e)=>{
         whileInView={{opacity:1,x:0}}
         transition={{duration:1}}
         >
-          <motion.img src={Astra} alt="contact"
+          <motion.img src={content.media?.contactImageUrl || Astra} alt="contact"
           className="w-72 md:w-96 lg:w-[420px] xl:w-[600px] 2xl:w-[650px] rounded-2xl shadow-lg object-cover"
           animate={{y:[0,-10,0]}}
           transition={{duration:1,repeat:Infinity,ease:"easeInOut"}}
@@ -118,7 +121,7 @@ const handelSubmit = async(e)=>{
         transition={{duration:0.6}}
         >
           <h2 className="text-3xl font-bold mb-4">
-            Let's Work Together
+            {section.title}
           </h2>
 
 
@@ -320,7 +323,7 @@ const handelSubmit = async(e)=>{
               disabled={status==="sending"}
               type="submit"
             >
-              {status==="sending"?"Sending...":"Send Message"}
+              {status==="sending"?"Sending...":section.submitLabel}
               
             </motion.button>
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export default function ParticleNetwork({ color = "#ffffff", opacity = 1  }) {
+export default function ParticleNetwork({ color = "#ffffff", opacity = 1 }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -55,7 +55,6 @@ export default function ParticleNetwork({ color = "#ffffff", opacity = 1  }) {
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = color;
-        // particle dots
         ctx.globalAlpha = 0.55 * opacity;
         ctx.fill();
       });
@@ -70,7 +69,6 @@ export default function ParticleNetwork({ color = "#ffffff", opacity = 1  }) {
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
             ctx.strokeStyle = color;
-            // particle-to-particle lines
             ctx.globalAlpha = (1 - distance / 145) * 0.28 * opacity;
             ctx.lineWidth = 2;
             ctx.stroke();
@@ -84,7 +82,6 @@ export default function ParticleNetwork({ color = "#ffffff", opacity = 1  }) {
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(pointer.x, pointer.y);
           ctx.strokeStyle = color;
-          // cursor-to-particle lines
           ctx.globalAlpha = (1 - pointerDistance / 160) * 0.8 * opacity;
           ctx.lineWidth = 2;
           ctx.stroke();
@@ -106,7 +103,7 @@ export default function ParticleNetwork({ color = "#ffffff", opacity = 1  }) {
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerleave", handlePointerLeave);
     };
-  }, [color]);
+  }, [color, opacity]);
 
   return (
     <canvas

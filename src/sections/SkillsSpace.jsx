@@ -1,218 +1,276 @@
-import { useEffect, useRef, useState } from "react";
-import { LuSparkles } from "react-icons/lu";
+import { AnimatePresence, motion } from "framer-motion";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { portfolioDefaults } from "../data/portfolioDefaults";
 import ParticlesBackground from "../components/ParticlesBackground";
-
-const deviconMap = {
-  Java: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg",
-  React: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-  "React.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
-  "Next.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original.svg",
-  TypeScript: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
-  "Tailwind CSS": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
-  Tailwind: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg",
-  NodeJS: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
-  "Node.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
-  Python: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
-  "C#": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/csharp/csharp-original.svg",
-  MongoDB: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg",
-  "C++": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg",
-  UNITY: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/unity/unity-original.svg",
-  Unity: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/unity/unity-original.svg",
-  Canva: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/canva/canva-original.svg",
-};
-
-const categoryRules = [
-  { title: "Languages", match: ["Java", "TypeScript", "Python", "C++", "C#"] },
-  { title: "Frontend", match: ["React", "React.js", "Next.js", "Tailwind CSS", "Tailwind", "Canva"] },
-  { title: "Backend & Data", match: ["NodeJS", "Node.js", "MongoDB", "Data Science", "AI", "AI & ML"] },
-  { title: "Creative Tech", match: ["UNITY", "Unity"] },
-];
-
-function getCategory(skill) {
-  const found = categoryRules.find((c) => c.match.includes(skill));
-  return found ? found.title : "More Tools";
-}
+import SkillIcon from "../components/SkillIcon";
 
 function seededRandom(seed) {
-  let s = seed;
+  let state = seed;
+
   return () => {
-    s = (s * 9301 + 49297) % 233280;
-    return s / 233280;
+    state = (state * 9301 + 49297) % 233280;
+    return state / 233280;
   };
 }
 
-const CATCH_RADIUS = 90;
+const starRandom = seededRandom(7);
+const stars = Array.from({ length: 70 }, () => ({
+  x: starRandom() * 100,
+  y: starRandom() * 100,
+  radius: starRandom() * 1.4 + 0.3,
+  opacity: starRandom() * 0.6 + 0.2,
+}));
+
+function dialogMotion(animation) {
+  if (animation === "slide") {
+    return { initial: { opacity: 0, y: 42 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: 26 } };
+  }
+
+  if (animation === "fade") {
+    return { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 } };
+  }
+
+  if (animation === "spring") {
+    return {
+      initial: { opacity: 0, scale: 0.82, y: 20 },
+      animate: { opacity: 1, scale: 1, y: 0 },
+      exit: { opacity: 0, scale: 0.92, y: 12 },
+      transition: { type: "spring", stiffness: 280, damping: 23 },
+    };
+  }
+
+  return { initial: { opacity: 0, scale: 0.9 }, animate: { opacity: 1, scale: 1 }, exit: { opacity: 0, scale: 0.94 } };
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function launchBall(ball) {
+  if (!ball) return;
+
+  const angle = Math.random() * Math.PI * 2;
+  ball.vx = Math.cos(angle) * 0.7;
+  ball.vy = Math.sin(angle) * 0.7;
+}
+
+function findNearestSkillToUfo(balls, cursorX, cursorY) {
+  const beamCenterY = cursorY + 72;
+
+  return balls.reduce((closest, ball) => {
+    const distance = Math.hypot(ball.x - cursorX, ball.y - beamCenterY);
+    const captureRadius = Math.max(118, ball.size / 2 + 78);
+
+    if (distance > captureRadius) return closest;
+
+    // Give a slight preference to balls under the UFO beam instead of above it.
+    const score = distance + (ball.y < cursorY ? 36 : 0);
+    return !closest || score < closest.score ? { ball, score } : closest;
+  }, null)?.ball || null;
+}
 
 export default function SkillsSpace({ content = portfolioDefaults }) {
-  const skillNames = content.skills || portfolioDefaults.skills;
-
+  const section = {
+    ...portfolioDefaults.skillsSpaceSection,
+    ...(content.skillsSpaceSection || {}),
+  };
+  const skillItems =
+    Array.isArray(content.spaceSkills)
+      ? content.spaceSkills
+      : portfolioDefaults.spaceSkills;
+  const skillItemsSignature = JSON.stringify(skillItems);
+  const stableSkillItems = useMemo(
+    () => JSON.parse(skillItemsSignature),
+    [skillItemsSignature]
+  );
+  const accentColor = section.accentColor || "#1DCD9F";
+  const secondaryColor = section.secondaryColor || "#8b7cf6";
   const sceneRef = useRef(null);
   const rafRef = useRef(null);
   const ballsRef = useRef([]);
-
+  const behaviorRef = useRef(section.ballAnimation);
   const [sceneSize, setSceneSize] = useState({ width: 0, height: 0 });
-  const [, forceTick] = useState(0);
   const [insideScene, setInsideScene] = useState(false);
-
+  const [renderState, setRenderState] = useState({
+    balls: [],
+    cursorX: 0,
+    cursorY: 0,
+    caughtIndex: null,
+  });
   const stateRef = useRef({
     cursorX: 0,
     cursorY: 0,
     caughtIndex: null,
-    insideScene: false,
   });
 
-  // Place balls with velocity for free movement
   useEffect(() => {
-    if (!sceneSize.width || !sceneSize.height) return;
-    const rand = seededRandom(42);
-    const placed = [];
+    behaviorRef.current = section.ballAnimation;
+  }, [section.ballAnimation]);
 
-    ballsRef.current = skillNames.map((name) => {
-      const size = 64 + Math.floor(rand() * 18);
-      const pad = size / 2 + 10;
-      const minX = pad;
-      const maxX = Math.max(sceneSize.width - pad, pad + 1);
-      const minY = pad;
-      const maxY = Math.max(sceneSize.height - pad, pad + 1);
-
-      let x = minX + rand() * (maxX - minX);
-      let y = minY + rand() * (maxY - minY);
-
-      for (let attempt = 0; attempt < 24; attempt += 1) {
-        const tooClose = placed.some((p) => {
-          const dx = p.x - x;
-          const dy = p.y - y;
-          const minDist = p.size / 2 + size / 2 + 14;
-          return Math.hypot(dx, dy) < minDist;
-        });
-        if (!tooClose) break;
-        x = minX + rand() * (maxX - minX);
-        y = minY + rand() * (maxY - minY);
-      }
-
-      placed.push({ x, y, size });
-
-      // Give each ball a random velocity
-      const speed = 0.4 + rand() * 0.7;
-      const angle = rand() * Math.PI * 2;
-      const vx = Math.cos(angle) * speed;
-      const vy = Math.sin(angle) * speed;
-
-      return {
-        name,
-        category: getCategory(name),
-        x,
-        y,
-        vx,
-        vy,
-        size,
-      };
-    });
-  }, [sceneSize, skillNames]);
-
-  // Measure scene size, react to resize.
   useEffect(() => {
-    const el = sceneRef.current;
-    if (!el) return;
-    const update = () => {
-      const rect = el.getBoundingClientRect();
+    const element = sceneRef.current;
+    if (!element) return undefined;
+
+    const measure = () => {
+      const rect = element.getBoundingClientRect();
       setSceneSize({ width: rect.width, height: rect.height });
     };
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(element);
+    return () => observer.disconnect();
   }, []);
 
-  // Animation loop: move balls, wrap horizontally, bounce vertically
   useEffect(() => {
-    let frame = 0;
+    if (!sceneSize.width || !sceneSize.height) return;
+    const random = seededRandom(42);
+    const placed = [];
+    const baseSize = clamp(Number(section.ballSize) || 76, 48, 104);
+
+    ballsRef.current = stableSkillItems
+      .filter((skill) => skill?.name?.trim())
+      .map((skill, index) => {
+        const size = clamp(baseSize + Math.round((random() - 0.5) * 18), 48, 104);
+        const padding = size / 2 + 14;
+        const minX = padding;
+        const maxX = Math.max(sceneSize.width - padding, padding + 1);
+        const minY = Math.max(padding, 160);
+        const maxY = Math.max(sceneSize.height - padding, minY + 1);
+        let x = minX + random() * (maxX - minX);
+        let y = minY + random() * (maxY - minY);
+
+        for (let attempt = 0; attempt < 30; attempt += 1) {
+          const overlaps = placed.some((ball) => {
+            const minimumDistance = ball.size / 2 + size / 2 + 16;
+            return Math.hypot(ball.x - x, ball.y - y) < minimumDistance;
+          });
+          if (!overlaps) break;
+          x = minX + random() * (maxX - minX);
+          y = minY + random() * (maxY - minY);
+        }
+
+        placed.push({ x, y, size });
+        const angle = random() * Math.PI * 2;
+        const speed = 0.3 + random() * 0.48;
+
+        return {
+          skill,
+          index,
+          x,
+          y,
+          size,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          phase: random() * Math.PI * 2,
+          orbitCenterX: x,
+          orbitCenterY: y,
+        };
+      });
+
+    stateRef.current.caughtIndex = null;
+    const resetFrame = requestAnimationFrame(() => {
+      setRenderState((current) => ({
+        ...current,
+        balls: ballsRef.current.map((ball) => ({ ...ball })),
+        caughtIndex: null,
+      }));
+    });
+
+    return () => cancelAnimationFrame(resetFrame);
+  }, [sceneSize.height, sceneSize.width, section.ballSize, stableSkillItems]);
+
+  useEffect(() => {
+    let frameCount = 0;
     let lastTime = performance.now();
 
     const tick = (now) => {
-      const dt = Math.min(now - lastTime, 32); // cap delta to avoid big jumps
+      const delta = Math.min(now - lastTime, 32);
       lastTime = now;
-
-      const s = stateRef.current;
+      const state = stateRef.current;
       const balls = ballsRef.current;
-      const W = sceneRef.current?.clientWidth || 800;
-      const H = sceneRef.current?.clientHeight || 560;
+      const width = sceneRef.current?.clientWidth || 1;
+      const height = sceneRef.current?.clientHeight || 1;
+      const mode = behaviorRef.current;
+      const time = now / 1000;
 
-      balls.forEach((b, i) => {
-        if (i === s.caughtIndex) return;
+      balls.forEach((ball, index) => {
+        if (index === state.caughtIndex) return;
 
-        // Move
-        b.x += b.vx * dt * 0.5;
-        b.y += b.vy * dt * 0.5;
+        const speedMultiplier = mode === "pulse" ? 0.58 : mode === "float" ? 0.7 : 1;
+        ball.x += ball.vx * delta * speedMultiplier;
+        ball.y += ball.vy * delta * speedMultiplier;
 
-        const r = b.size / 2;
-
-        // Horizontal wrap: exit right → enter left, exit left → enter right
-        if (b.x - r > W) {
-          b.x = -r;
-        } else if (b.x + r < 0) {
-          b.x = W + r;
+        if (mode === "orbit") {
+          ball.x += Math.cos(time * 0.85 + ball.phase) * 0.3;
+          ball.y += Math.sin(time * 0.95 + ball.phase) * 0.3;
+        } else if (mode === "float") {
+          ball.y += Math.sin(time * 1.2 + ball.phase) * 0.22;
+        } else if (mode === "pulse") {
+          ball.y += Math.sin(time * 1.5 + ball.phase) * 0.15;
         }
 
-        // Vertical bounce: reflect velocity at top/bottom
-        if (b.y - r < 0) {
-          b.y = r;
-          b.vy = Math.abs(b.vy);
-        } else if (b.y + r > H) {
-          b.y = H - r;
-          b.vy = -Math.abs(b.vy);
+        const radius = ball.size / 2;
+        if (ball.x - radius > width) ball.x = -radius;
+        if (ball.x + radius < 0) ball.x = width + radius;
+        if (ball.y - radius < 138) {
+          ball.y = 138 + radius;
+          ball.vy = Math.abs(ball.vy);
+        }
+        if (ball.y + radius > height - 14) {
+          ball.y = height - 14 - radius;
+          ball.vy = -Math.abs(ball.vy);
         }
       });
 
-      // Soft collision so balls bounce apart instead of overlapping.
-      const PADDING = 6;
-      for (let i = 0; i < balls.length; i += 1) {
-        if (i === s.caughtIndex) continue;
-        for (let j = i + 1; j < balls.length; j += 1) {
-          if (j === s.caughtIndex) continue;
-          const a = balls[i];
-          const b = balls[j];
-          const dx = b.x - a.x;
-          const dy = b.y - a.y;
-          const dist = Math.hypot(dx, dy) || 0.0001;
-          const minDist = a.size / 2 + b.size / 2 + PADDING;
-          if (dist < minDist) {
-            const overlap = minDist - dist;
-            const nx = dx / dist;
-            const ny = dy / dist;
-            const push = overlap * 0.5;
-            a.x -= nx * push;
-            a.y -= ny * push;
-            b.x += nx * push;
-            b.y += ny * push;
+      for (let index = 0; index < balls.length; index += 1) {
+        if (index === state.caughtIndex) continue;
+        for (let otherIndex = index + 1; otherIndex < balls.length; otherIndex += 1) {
+          if (otherIndex === state.caughtIndex) continue;
+          const first = balls[index];
+          const second = balls[otherIndex];
+          const dx = second.x - first.x;
+          const dy = second.y - first.y;
+          const distance = Math.hypot(dx, dy) || 0.0001;
+          const minimumDistance = first.size / 2 + second.size / 2 + 8;
 
-            // Exchange velocity components along normal (elastic-ish)
-            const aDot = a.vx * nx + a.vy * ny;
-            const bDot = b.vx * nx + b.vy * ny;
-            a.vx += (bDot - aDot) * nx * 0.6;
-            a.vy += (bDot - aDot) * ny * 0.6;
-            b.vx += (aDot - bDot) * nx * 0.6;
-            b.vy += (aDot - bDot) * ny * 0.6;
+          if (distance < minimumDistance) {
+            const normalX = dx / distance;
+            const normalY = dy / distance;
+            const offset = (minimumDistance - distance) * 0.5;
+            first.x -= normalX * offset;
+            first.y -= normalY * offset;
+            second.x += normalX * offset;
+            second.y += normalY * offset;
+            const firstProjection = first.vx * normalX + first.vy * normalY;
+            const secondProjection = second.vx * normalX + second.vy * normalY;
+            first.vx += (secondProjection - firstProjection) * normalX * 0.55;
+            first.vy += (secondProjection - firstProjection) * normalY * 0.55;
+            second.vx += (firstProjection - secondProjection) * normalX * 0.55;
+            second.vy += (firstProjection - secondProjection) * normalY * 0.55;
           }
         }
       }
 
-      // Caught ball stays pinned right under the cursor.
-      if (s.caughtIndex !== null) {
-        const b = balls[s.caughtIndex];
-        if (b) {
-          b.x = s.cursorX;
-          b.y = s.cursorY + 70;
-          b.vx = 0;
-          b.vy = 0;
+      if (state.caughtIndex !== null) {
+        const caughtBall = balls[state.caughtIndex];
+        if (caughtBall) {
+          caughtBall.x = clamp(state.cursorX, caughtBall.size / 2, width - caughtBall.size / 2);
+          caughtBall.y = clamp(state.cursorY + 72, 150, height - caughtBall.size / 2 - 14);
+          caughtBall.vx = 0;
+          caughtBall.vy = 0;
         }
       }
 
-      frame += 1;
-      if (frame >= 2) {
-        frame = 0;
-        forceTick((n) => (n + 1) % 1000000);
+      frameCount += 1;
+      if (frameCount >= 2) {
+        frameCount = 0;
+        setRenderState({
+          balls: balls.map((ball) => ({ ...ball })),
+          cursorX: state.cursorX,
+          cursorY: state.cursorY,
+          caughtIndex: state.caughtIndex,
+        });
       }
 
       rafRef.current = requestAnimationFrame(tick);
@@ -222,279 +280,289 @@ export default function SkillsSpace({ content = portfolioDefaults }) {
     return () => cancelAnimationFrame(rafRef.current);
   }, []);
 
-  useEffect(() => {
-    const scene = sceneRef.current;
-    if (!scene) return;
+  const releaseCaughtSkill = useCallback(() => {
+    const caughtIndex = stateRef.current.caughtIndex;
+    const caughtBall = caughtIndex === null ? null : ballsRef.current[caughtIndex];
 
-    const toLocal = (e) => {
-      const rect = scene.getBoundingClientRect();
-      return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    };
+    launchBall(caughtBall);
 
-    const onMove = (e) => {
-      const { x, y } = toLocal(e);
-      stateRef.current.cursorX = x;
-      stateRef.current.cursorY = y;
-      if (!stateRef.current.insideScene) {
-        stateRef.current.insideScene = true;
-        setInsideScene(true);
-      }
-    };
-
-    const onEnter = () => {
-      stateRef.current.insideScene = true;
-      setInsideScene(true);
-    };
-
-    const onLeave = () => {
-      stateRef.current.insideScene = false;
-      setInsideScene(false);
-      const s = stateRef.current;
-      if (s.caughtIndex !== null) {
-        const b = ballsRef.current[s.caughtIndex];
-        if (b) {
-          // Give a gentle random velocity when released
-          const angle = Math.random() * Math.PI * 2;
-          b.vx = Math.cos(angle) * 0.6;
-          b.vy = Math.sin(angle) * 0.6;
-        }
-        s.caughtIndex = null;
-      }
-    };
-
-    // Left-click to catch: find the nearest ball to the cursor
-    const onMouseDown = (e) => {
-      if (e.button !== 0) return; // left mouse button only
-      e.preventDefault();
-      const { x, y } = toLocal(e);
-      const s = stateRef.current;
-
-      let best = null;
-      let bestDist = Infinity;
-      ballsRef.current.forEach((b, i) => {
-        const d = Math.hypot(b.x - x, b.y - y);
-        if (d < bestDist) {
-          bestDist = d;
-          best = i;
-        }
-      });
-
-      if (best !== null && bestDist <= CATCH_RADIUS) {
-        s.caughtIndex = best;
-      }
-    };
-
-    const onMouseUp = (e) => {
-      if (e.button !== 0) return;
-      const s = stateRef.current;
-      if (s.caughtIndex !== null) {
-        const b = ballsRef.current[s.caughtIndex];
-        if (b) {
-          // Give a gentle random velocity on release
-          const angle = Math.random() * Math.PI * 2;
-          b.vx = Math.cos(angle) * 0.6;
-          b.vy = Math.sin(angle) * 0.6;
-        }
-        s.caughtIndex = null;
-      }
-    };
-
-    scene.addEventListener("mousemove", onMove);
-    scene.addEventListener("mouseenter", onEnter);
-    scene.addEventListener("mouseleave", onLeave);
-    scene.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mouseup", onMouseUp);
-
-    return () => {
-      scene.removeEventListener("mousemove", onMove);
-      scene.removeEventListener("mouseenter", onEnter);
-      scene.removeEventListener("mouseleave", onLeave);
-      scene.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mouseup", onMouseUp);
-    };
+    stateRef.current.caughtIndex = null;
+    setRenderState((current) => ({ ...current, caughtIndex: null }));
   }, []);
 
-  const { caughtIndex, cursorX, cursorY } = stateRef.current;
-  const caughtBall = caughtIndex !== null ? ballsRef.current[caughtIndex] : null;
+  useEffect(() => {
+    const onKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      releaseCaughtSkill();
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [releaseCaughtSkill]);
+
+  const updatePointer = (event) => {
+    const rect = sceneRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    stateRef.current.cursorX = event.clientX - rect.left;
+    stateRef.current.cursorY = event.clientY - rect.top;
+    if (!insideScene) setInsideScene(true);
+  };
+
+  const catchNearestSkill = (event) => {
+    if (event.button !== 0) return;
+
+    updatePointer(event);
+
+    const nearestBall = findNearestSkillToUfo(
+      ballsRef.current,
+      stateRef.current.cursorX,
+      stateRef.current.cursorY
+    );
+
+    if (!nearestBall) return;
+
+    try {
+      sceneRef.current?.setPointerCapture?.(event.pointerId);
+    } catch {
+      // The interaction still works in browsers that do not allow pointer capture here.
+    }
+    stateRef.current.caughtIndex = nearestBall.index;
+    setRenderState((current) => ({ ...current, caughtIndex: nearestBall.index }));
+  };
+
+  const releasePointerCatch = (event) => {
+    if (event?.type === "pointerup" && event.button !== 0) return;
+    releaseCaughtSkill();
+
+    if (event && sceneRef.current?.hasPointerCapture?.(event.pointerId)) {
+      sceneRef.current.releasePointerCapture(event.pointerId);
+    }
+  };
+
+  const caughtBall =
+    renderState.caughtIndex === null
+      ? null
+      : renderState.balls.find((ball) => ball.index === renderState.caughtIndex) || null;
+  const detailBall = caughtBall;
+  const selectedSkill = caughtBall?.skill || null;
+  const dialogWidth = Math.min(352, Math.max(sceneSize.width - 32, 0));
+  const detailDialogPosition = detailBall
+    ? (() => {
+        const gap = 18;
+        const rightSide = detailBall.x + detailBall.size / 2 + gap;
+        const leftSide = detailBall.x - detailBall.size / 2 - gap - dialogWidth;
+        const shouldUseLeft = rightSide + dialogWidth > sceneSize.width - 16 && leftSide >= 16;
+
+        return {
+          left: shouldUseLeft
+            ? leftSide
+            : clamp(rightSide, 16, Math.max(16, sceneSize.width - dialogWidth - 16)),
+          top: clamp(detailBall.y - 126, 16, Math.max(16, sceneSize.height - 332)),
+        };
+      })()
+    : {};
+  const modalAnimation = dialogMotion(section.dialogAnimation);
 
   return (
-    
     <section
-    
-    
       id="skills-space"
       ref={sceneRef}
-      className="relative w-screen bg-[linear-gradient(180deg,#070914_0%,#0a0d1c_55%,#05060c_100%)] text-white select-none"
-      style={{ height: "100vh", cursor: "none" }}
+      className="relative isolate w-full min-h-[640px] overflow-hidden bg-[#070914] text-white"
+      style={{ height: "100svh", cursor: "none" }}
+      onPointerMove={updatePointer}
+      onPointerEnter={() => setInsideScene(true)}
+      onPointerLeave={() => {
+        if (stateRef.current.caughtIndex === null) setInsideScene(false);
+      }}
+      onPointerDown={catchNearestSkill}
+      onPointerUp={releasePointerCatch}
+      onPointerCancel={releasePointerCatch}
+      onLostPointerCapture={releasePointerCatch}
     >
-      {/* Background gradients + stars */}
-      <ParticlesBackground />
+      <ParticlesBackground color={secondaryColor} />
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(29,205,159,0.12),transparent_35%),radial-gradient(circle_at_82%_75%,rgba(139,124,246,0.1),transparent_35%)]" />
-        <StarField />
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `radial-gradient(circle at 18% 20%, ${accentColor}26, transparent 35%), radial-gradient(circle at 82% 75%, ${secondaryColor}24, transparent 35%)`,
+          }}
+        />
+        {section.showStars && <StarField />}
       </div>
 
-      {/* Header overlay — sits top-left, pointer-events-none so it doesn't block ball clicks */}
-      <div className="pointer-events-none absolute top-10 left-8 z-30 max-w-xl">
+      <header className="pointer-events-none absolute left-6 top-8 z-20 max-w-xl lg:left-10 lg:top-10">
         <div className="mb-3 flex items-center gap-4 text-xs font-medium uppercase tracking-[0.22em] text-gray-400">
           <span className="h-px w-10 bg-gray-700" />
-          Catch the Skill and check where i use that skill.
+          {section.eyebrow}
         </div>
-        <h2 className="text-4xl font-extrabold text-white sm:text-5xl">
-          CHINMAY BISWAS
-        </h2>
-        <p className="mt-4 text-sm leading-relaxed text-gray-400 sm:text-base">
-          Use Right click to catch.
-        </p>
-      </div>
+        <h2 className="text-4xl font-extrabold text-white sm:text-5xl">{section.title}</h2>
+        <p className="mt-4 text-sm leading-relaxed text-gray-400 sm:text-base">{section.description}</p>
+        {section.interactionHint && (
+          <p className="mt-3 text-xs font-medium uppercase tracking-wide" style={{ color: accentColor }}>
+            {section.interactionHint}
+          </p>
+        )}
+      </header>
 
-      {/* Balls */}
-      {ballsRef.current.map((b, i) => {
-        const isCaught = i === caughtIndex;
+      {renderState.balls.map((ball) => {
+        const isCaught = ball.index === renderState.caughtIndex;
+        const isPulsing = section.ballAnimation === "pulse" && !isCaught;
+
         return (
           <div
-            key={b.name}
-            className="pointer-events-none absolute"
+            key={`${ball.skill.name}-${ball.index}`}
+            role="img"
+            aria-label={ball.skill.name}
+            className={`absolute z-10 grid place-items-center rounded-full border bg-black/30 p-2 backdrop-blur-sm transition-shadow duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+              isPulsing ? "animate-pulse" : ""
+            }`}
             style={{
-              left: b.x,
-              top: b.y,
-              width: b.size,
-              height: b.size,
-              transform: `translate(-50%, -50%) scale(${isCaught ? 1.08 : 1})`,
-              zIndex: isCaught ? 5 : 2,
+              left: ball.x,
+              top: ball.y,
+              width: ball.size,
+              height: ball.size,
+              transform: `translate(-50%, -50%) scale(${isCaught ? 1.1 : 1})`,
+              borderColor: isCaught ? accentColor : `${secondaryColor}70`,
+              boxShadow: isCaught
+                ? `0 0 32px ${accentColor}80`
+                : `0 0 22px ${secondaryColor}38`,
             }}
+            onPointerDown={(event) => event.stopPropagation()}
           >
-            <div
-              className={`flex h-full w-full items-center justify-center rounded-full border backdrop-blur-sm ${
-                isCaught
-                  ? "border-[#1DCD9F]/80 bg-[#1DCD9F]/15 shadow-[0_0_30px_rgba(29,205,159,0.45)]"
-                  : "border-white/15 bg-white/[0.06] shadow-[0_0_18px_rgba(139,124,246,0.12)]"
-              }`}
-            >
-              {deviconMap[b.name] ? (
-                <img
-                  src={deviconMap[b.name]}
-                  alt=""
-                  className="h-1/2 w-1/2 object-contain"
-                  loading="lazy"
-                  draggable={false}
-                />
-              ) : (
-                <LuSparkles className="h-1/2 w-1/2 text-[#1DCD9F]" />
-              )}
-            </div>
+            <SkillIcon
+              icon={ball.skill.icon}
+              iconUrl={ball.skill.iconUrl}
+              alt=""
+              className="h-1/2 w-1/2 object-contain"
+            />
           </div>
         );
       })}
 
-      {/* Tractor beam, visible while holding a ball */}
-      {insideScene && caughtIndex !== null && (
+      {insideScene && caughtBall && (
         <div
-          className="pointer-events-none absolute"
+          className="pointer-events-none absolute z-20"
           style={{
-            left: cursorX,
-            top: cursorY + 16,
-            width: 64,
-            height: 100,
+            left: renderState.cursorX,
+            top: renderState.cursorY + 14,
+            width: 68,
+            height: 108,
             transform: "translate(-50%, 0)",
-            background: "linear-gradient(180deg, rgba(29,205,159,0.4), rgba(29,205,159,0))",
+            background: `linear-gradient(180deg, ${accentColor}78, transparent)`,
             clipPath: "polygon(38% 0%, 62% 0%, 100% 100%, 0% 100%)",
-            zIndex: 4,
           }}
         />
       )}
 
-      {/* Custom UFO cursor */}
       {insideScene && (
         <div
-          className="pointer-events-none absolute z-10"
+          className="pointer-events-none absolute z-30"
           style={{
-            left: cursorX,
-            top: cursorY,
+            left: renderState.cursorX,
+            top: renderState.cursorY,
             transform: "translate(-50%, -50%)",
           }}
         >
-          <UfoIcon glowing={caughtIndex !== null} />
+          <UfoIcon glowing={Boolean(caughtBall)} accentColor={accentColor} secondaryColor={secondaryColor} />
         </div>
       )}
 
-      {/* Details card beside the cursor */}
-      {caughtBall && (
-        <div
-          className="pointer-events-none absolute z-20 w-56 rounded-xl border border-[#1DCD9F]/40 bg-[#0b0e1a]/95 p-4 shadow-[0_18px_40px_rgba(0,0,0,0.45)] backdrop-blur"
-          style={{
-            left: Math.min(cursorX + 90, sceneSize.width - 230),
-            top: Math.max(cursorY - 40, 12),
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-black/30">
-              {deviconMap[caughtBall.name] ? (
-                <img
-                  src={deviconMap[caughtBall.name]}
-                  alt=""
-                  className="h-6 w-6 object-contain"
+      <AnimatePresence>
+        {selectedSkill && detailBall && (
+          <motion.aside
+            role="dialog"
+            aria-labelledby="skill-space-dialog-title"
+            className="absolute z-40 w-80 max-w-[calc(100%-2rem)] cursor-auto overflow-y-auto rounded-lg border bg-[#0b0e1a] p-5 shadow-2xl sm:p-6"
+            style={{ ...detailDialogPosition, borderColor: `${accentColor}7a`, maxHeight: "calc(100% - 2rem)" }}
+            initial={modalAnimation.initial}
+            animate={modalAnimation.animate}
+            exit={modalAnimation.exit}
+            transition={modalAnimation.transition || { duration: 0.25, ease: "easeOut" }}
+            onPointerDown={(event) => event.stopPropagation()}
+          >
+            <p className="text-xs font-semibold uppercase tracking-[0.18em]" style={{ color: accentColor }}>
+              {section.dialogEyebrow}
+            </p>
+            <div className="mt-4 flex min-w-0 items-center gap-4">
+              <span
+                className="grid h-14 w-14 shrink-0 place-items-center rounded-lg border bg-black/25"
+                style={{ borderColor: `${accentColor}75`, color: accentColor }}
+              >
+                <SkillIcon
+                  icon={selectedSkill.icon}
+                  iconUrl={selectedSkill.iconUrl}
+                  alt={`${selectedSkill.name} icon`}
+                  className="h-8 w-8 object-contain"
                 />
-              ) : (
-                <LuSparkles className="h-5 w-5 text-[#1DCD9F]" />
-              )}
-            </span>
-            <div>
-              <p className="text-sm font-semibold text-white">{caughtBall.name}</p>
-              <p className="text-[11px] uppercase tracking-wide text-[#1DCD9F]">
-                {caughtBall.category}
-              </p>
+              </span>
+              <div className="min-w-0">
+                <h3 id="skill-space-dialog-title" className="break-words text-2xl font-bold text-white">
+                  {selectedSkill.name}
+                </h3>
+                {selectedSkill.category && (
+                  <p className="mt-1 text-xs font-semibold uppercase tracking-wide text-gray-400">
+                    {selectedSkill.category}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+
+            <div className="mt-6 grid gap-5 border-t border-white/10 pt-5">
+              <div>
+                <h4 className="text-sm font-semibold text-white">{section.dialogDescriptionLabel}</h4>
+                <p className="mt-2 text-sm leading-relaxed text-gray-400">
+                  {selectedSkill.description || "Add a description for this skill from the Skill Space page in Admin."}
+                </p>
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-white">{section.dialogUsageLabel}</h4>
+                <p className="mt-2 text-sm leading-relaxed text-gray-400">
+                  {selectedSkill.usage || section.emptyUsageText}
+                </p>
+              </div>
+            </div>
+          </motion.aside>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
 
-function UfoIcon({ glowing }) {
+function UfoIcon({ glowing, accentColor, secondaryColor }) {
   return (
     <svg
       width="84"
       height="48"
       viewBox="0 0 84 48"
+      aria-hidden="true"
       style={{
         filter: glowing
-          ? "drop-shadow(0 0 16px rgba(29,205,159,0.65))"
-          : "drop-shadow(0 0 8px rgba(139,124,246,0.35))",
+          ? `drop-shadow(0 0 16px ${accentColor})`
+          : `drop-shadow(0 0 8px ${secondaryColor})`,
       }}
     >
-      <ellipse cx="42" cy="30" rx="40" ry="10" fill="#1a1f33" stroke="#1DCD9F" strokeOpacity="0.5" />
+      <ellipse cx="42" cy="30" rx="40" ry="10" fill="#1a1f33" stroke={accentColor} strokeOpacity="0.5" />
       <ellipse cx="42" cy="30" rx="26" ry="5" fill="#0d101c" />
-      <path d="M22 26 C22 10, 62 10, 62 26" fill="#2a3150" stroke="#8b7cf6" strokeOpacity="0.6" />
-      <circle cx="42" cy="16" r="9" fill="#0b0e1a" stroke="#1DCD9F" strokeWidth="1.2" />
-      <circle cx="20" cy="30" r="2.4" fill="#1DCD9F" />
-      <circle cx="42" cy="33" r="2.4" fill="#8b7cf6" />
-      <circle cx="64" cy="30" r="2.4" fill="#1DCD9F" />
+      <path d="M22 26 C22 10, 62 10, 62 26" fill="#2a3150" stroke={secondaryColor} strokeOpacity="0.6" />
+      <circle cx="42" cy="16" r="9" fill="#0b0e1a" stroke={accentColor} strokeWidth="1.2" />
+      <circle cx="20" cy="30" r="2.4" fill={accentColor} />
+      <circle cx="42" cy="33" r="2.4" fill={secondaryColor} />
+      <circle cx="64" cy="30" r="2.4" fill={accentColor} />
     </svg>
   );
 }
 
 function StarField() {
-  const stars = useRef(
-    Array.from({ length: 70 }, () => ({
-      x: Math.random() * 100,
-      y: Math.random() * 100,
-      r: Math.random() * 1.4 + 0.3,
-      o: Math.random() * 0.6 + 0.2,
-    })),
-  ).current;
-
   return (
-    <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none">
-      {stars.map((s, i) => (
+    <svg className="absolute inset-0 h-full w-full" preserveAspectRatio="none" aria-hidden="true">
+      {stars.map((star, index) => (
         <circle
-          key={i}
-          cx={`${s.x}%`}
-          cy={`${s.y}%`}
-          r={s.r}
+          key={index}
+          cx={`${star.x}%`}
+          cy={`${star.y}%`}
+          r={star.radius}
           fill="#ffffff"
-          opacity={s.o}
+          opacity={star.opacity}
         />
       ))}
     </svg>

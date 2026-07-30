@@ -22,4 +22,10 @@ export default defineConfig([
       "no-unused-expressions": "off",
     },
   },
+  {
+    files: ['server/**/*.js'],
+    languageOptions: {
+      globals: globals.node,
+    },
+  },
 ])
