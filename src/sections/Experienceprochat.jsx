@@ -1,453 +1,572 @@
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useScroll,
-  useTransform,
-} from "framer-motion";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { useMemo, useRef, useState } from "react";
 import ParticlesBackground from "../components/ParticlesBackground";
+import {
+  getPortfolioList,
+  journeyDesktopAnimationOptions,
+  journeyMobileAnimationOptions,
+  portfolioDefaults,
+} from "../data/portfolioDefaults";
 
-const exps = [
-   {
-    role: "Technology Curiosity",
-    company: "Early Learning",
-    duration: "Before 2018",
-    description: "Developed curiosity about technology and started learning basic HTML, CSS, and Python while exploring how websites and digital systems work."
-  },
+const desktopLayouts = new Set(["rail", "spotlight"]);
+const desktopAnimations = new Set(journeyDesktopAnimationOptions.map(({ value }) => value));
+const mobileLayouts = new Set(["timeline", "stack"]);
+const mobileAnimations = new Set(journeyMobileAnimationOptions.map(({ value }) => value));
 
-  {
-    role: "Creative Editing Journey",
-    company: "Design & Editing",
-    duration: "2020",
-    description: "Learned photo and video editing using tools like KineMaster, Canva, and PicsArt, which helped develop creativity and design sense."
-  },
+function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
+}
 
-  {
-    role: "School Education",
-    company: "Jawahar Navodaya Vidyalaya",
-    duration: "2018 - 2022",
-    description: "Completed 10th and 12th education while strengthening analytical thinking, discipline, and academic foundations."
-  },
+function numberSetting(value, fallback, min, max) {
+  const numericValue = Number(value);
 
-  {
-    role: "JEE Advanced Preparation",
-    company: "GAIL Super 100",
-    duration: "2022 - 23",
-    description: "Selected for the GAIL Super 100 coaching program and prepared intensively for JEE Advanced."
-  },
+  if (!Number.isFinite(numericValue)) return fallback;
+  return clamp(numericValue, min, max);
+}
 
-  {
-    role: "IIT Guwahati Journey",
-    company: "B.Tech in ECE",
-    duration: "2023",
-    description: "Started B.Tech at IIT Guwahati and began actively exploring multiple technology domains and development fields."
-  },
+function selectSetting(value, values, fallback) {
+  return values.has(value) ? value : fallback;
+}
 
-  {
-    role: "Game Development Introduction",
-    company: "Kriti • Game Development Module",
-    duration: "2023",
-    description: "Participated in Kriti's Game Development Module and discovered a strong interest in Unity and interactive game systems."
-  },
+function withAlpha(color, alpha) {
+  const normalized = String(color || "").trim().replace("#", "");
+  const hex = normalized.length === 3
+    ? normalized.split("").map((part) => `${part}${part}`).join("")
+    : normalized;
 
-  {
-    role: "Game Development Club",
-    company: "IIT Guwahati",
-    duration: "2023 - 24",
-    description: "Joined the Game Development Club and worked on multiple game projects while improving gameplay design and development skills."
-  },
+  if (!/^[0-9a-fA-F]{6}$/.test(hex)) return `rgba(176, 92, 224, ${alpha})`;
 
-  {
-    role: "Cybersecurity Club",
-    company: "IIT Guwahati",
-    duration: "2023 - 24",
-    description: "Participated in cybersecurity activities, worked on Capture The Flag projects, and helped conduct technical workshops."
-  },
+  const red = Number.parseInt(hex.slice(0, 2), 16);
+  const green = Number.parseInt(hex.slice(2, 4), 16);
+  const blue = Number.parseInt(hex.slice(4, 6), 16);
 
-  {
-    role: "Programming Foundations",
-    company: "C++ & DSA",
-    duration: "2023",
-    description: "Started learning C++, problem solving, and core programming concepts to build strong technical foundations."
-  },
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
+}
 
-  {
-    role: "First Unity Projects",
-    company: "Game Development",
-    duration: "2023",
-    description: "Built Unity prototypes and experimented with gameplay mechanics, animations, interactions, and level systems."
-  },
+function initialsForIndex(index) {
+  return String(index + 1).padStart(2, "0");
+}
 
-  {
-    role: "Pheneon Quest",
-    company: "IGDC Submission",
-    duration: "2024",
-    description: "Developed gameplay systems, combat mechanics, storyline integration, and overall technical implementation for a 2.5D action-adventure game."
-  },
+function metaForJourney(journey) {
+  return journey.company || journey.duration || "";
+}
 
-  {
-    role: "Frontend Development",
-    company: "Web Development",
-    duration: "2024",
-    description: "Started learning React.js, Tailwind CSS, and responsive web development for creating modern user interfaces."
-  },
+function motionForMobile(animation, index) {
+  const fromRight = index % 2 === 1;
 
-  {
-    role: "MERN Stack Journey",
-    company: "Full-Stack Development",
-    duration: "2024",
-    description: "Expanded into backend technologies including Node.js, Express.js, MongoDB, and REST APIs."
-  },
-
-  {
-    role: "Echoes of Regret",
-    company: "Unity Game Project",
-    duration: "2025",
-    description: "Led the development team while also handling major gameplay coding, mechanics, systems integration, and project execution."
-  },
-
-  {
-    role: "Kriti GameJam Achievement",
-    company: "IIT Guwahati",
-    duration: "2025",
-    description: "Secured runner-up position in Kriti GameJam by developing and submitting Echoes of Regret, a complete Unity-based game."
-  },
-
-  {
-    role: "Hot Corner",
-    company: "MERN Stack Project",
-    duration: "2025",
-    description: "Built a full-stack movie ticket booking platform with authentication, seat booking, admin dashboard, and responsive UI."
-  },
-
-  {
-    role: "AI/ML Exploration",
-    company: "Machine Learning",
-    duration: "2025",
-    description: "Started learning AI/ML concepts and integrating recommendation systems into projects for smarter user experiences."
-  },
-
-  {
-    role: "Competitive Coding",
-    company: "LeetCode & Codeforces",
-    duration: "Present",
-    description: "Regularly practice DSA and competitive programming to improve logical thinking and problem-solving abilities."
-  },
-  {
-    role: "ML Completed",
-    company: "Machine Learning",
-    duration: "2025",
-    description: "made two small projects and starting AI from now on from youtube channel campusX."
-  },
-  {
-    role:"Got an Intern",
-    company:"SoundVerse.ai",
-    duration:"currently doing",
-    description:"i will add a brief details about how i got my first intern"
+  if (animation === "slide") {
+    return {
+      initial: { opacity: 0, x: fromRight ? 46 : -46, y: 0, scale: 0.98 },
+      visible: { opacity: 1, x: 0, y: 0, scale: 1 },
+    };
   }
-];
 
-const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+  if (animation === "fade") {
+    return {
+      initial: { opacity: 0, x: 0, y: 12, scale: 0.97 },
+      visible: { opacity: 1, x: 0, y: 0, scale: 1 },
+    };
+  }
 
-function DesktopExpItem({
-  exp,
-  absoluteIdx,
-  activeIndex,
-  totalCards,
-  visibleCount,
-  scrollYProgress,
-}) {
-  const centerOffset = (visibleCount - 1) / 2;
-  const width = visibleCount >= 4 ? 270 : 400;
-  const gap = visibleCount >= 4 ? 285 : 345;
-  const isTop = absoluteIdx % 2 !== 0;
-  const x = useTransform(scrollYProgress, (latest) => {
-    const scrollStep = latest * Math.max(totalCards - 1, 1);
-    const slideStart = visibleCount - 1;
+  if (animation === "flip") {
+    return {
+      initial: { opacity: 0, rotateX: fromRight ? -58 : 58, y: 24, scale: 0.94 },
+      visible: { opacity: 1, rotateX: 0, y: 0, scale: 1 },
+    };
+  }
 
-    if (scrollStep <= slideStart) {
-      return (absoluteIdx - centerOffset) * gap;
-    }
+  if (animation === "swing") {
+    return {
+      initial: { opacity: 0, x: fromRight ? 62 : -62, rotate: fromRight ? 10 : -10, scale: 0.96 },
+      visible: { opacity: 1, x: 0, rotate: 0, scale: 1 },
+    };
+  }
 
-    const slideRaw = scrollStep - slideStart;
-    const slideIndex = Math.floor(slideRaw);
-    const slideProgress = slideRaw - slideIndex;
-    const slot = absoluteIdx - slideIndex;
+  if (animation === "pop") {
+    return {
+      initial: { opacity: 0, y: 22, rotate: fromRight ? 4 : -4, scale: 0.72 },
+      visible: { opacity: 1, y: 0, rotate: 0, scale: 1 },
+    };
+  }
 
-    return (slot - centerOffset - slideProgress) * gap;
+  if (animation === "curtain") {
+    return {
+      initial: {
+        opacity: 0,
+        x: fromRight ? 18 : -18,
+        scale: 0.98,
+        clipPath: fromRight ? "inset(0 0 0 100%)" : "inset(0 100% 0 0)",
+      },
+      visible: { opacity: 1, x: 0, scale: 1, clipPath: "inset(0 0 0 0)" },
+    };
+  }
+
+  return {
+    initial: { opacity: 0, x: 0, y: 38, scale: 0.96 },
+    visible: { opacity: 1, x: 0, y: 0, scale: 1 },
+  };
+}
+
+function mobileCardTransition(animation, index) {
+  const delay = Math.min(index * 0.035, 0.18);
+
+  if (animation === "swing" || animation === "pop") {
+    return { type: "spring", stiffness: 250, damping: 21, mass: 0.72, delay };
+  }
+
+  if (animation === "curtain") {
+    return { duration: 0.74, delay, ease: [0.16, 1, 0.3, 1] };
+  }
+
+  return { duration: animation === "flip" ? 0.7 : 0.62, delay, ease: [0.22, 1, 0.36, 1] };
+}
+
+function mobileTransformOrigin(animation, index) {
+  if (animation === "swing" || animation === "curtain") {
+    return index % 2 === 1 ? "right center" : "left center";
+  }
+
+  return "center center";
+}
+
+function cardWidthClass(visibleCards) {
+  if (visibleCards >= 4) return "w-[min(22vw,17rem)]";
+  if (visibleCards <= 2) return "w-[min(68vw,34rem)]";
+  return "w-[min(30vw,25rem)]";
+}
+
+function desktopCardState({ animation, layout, cardGap, index, total, latest }) {
+  const lane = index % 2 === 0 ? -1 : 1;
+  const relative = index - latest * Math.max(total - 1, 0);
+  const distance = Math.abs(relative);
+  const layoutGap = layout === "spotlight" ? cardGap * 1.28 : cardGap;
+  const baseState = {
+    x: relative * layoutGap,
+    y: lane * Math.min(distance * 28, 42),
+    scale: Math.max(0.84, 1 - distance * 0.09),
+    opacity: clamp(1 - distance * 0.5, 0, 1),
+    rotate: 0,
+    rotateX: 0,
+    rotateY: 0,
+    zIndex: Math.round(100 - Math.min(distance * 24, 96)),
+  };
+
+  if (animation === "cascade") {
+    return {
+      ...baseState,
+      y: lane * Math.min(distance * 68, 104),
+      scale: Math.max(0.79, 1 - distance * 0.11),
+      opacity: clamp(1 - distance * 0.53, 0, 1),
+      rotate: clamp(relative * lane * 3.5, -8, 8),
+    };
+  }
+
+  if (animation === "focus") {
+    return {
+      ...baseState,
+      x: relative * layoutGap * 1.16,
+      y: lane * Math.min(distance * 16, 28),
+      scale: Math.max(0.74, 1 - distance * 0.16),
+      opacity: clamp(1 - distance * 0.72, 0, 1),
+    };
+  }
+
+  if (animation === "orbit") {
+    const orbitOffset = clamp(relative, -3, 3);
+
+    return {
+      ...baseState,
+      x: orbitOffset * layoutGap * 0.68,
+      y: Math.sin(orbitOffset * 1.12) * 118,
+      scale: Math.max(0.64, 1 - distance * 0.14),
+      opacity: clamp(1 - distance * 0.46, 0, 1),
+      rotate: clamp(orbitOffset * 14, -26, 26),
+      rotateY: clamp(orbitOffset * -22, -42, 42),
+    };
+  }
+
+  if (animation === "deck") {
+    const deckOffset = clamp(relative, -3.5, 3.5);
+    const deckDistance = Math.abs(deckOffset);
+
+    return {
+      ...baseState,
+      x: deckOffset * 32,
+      y: deckOffset * 44,
+      scale: Math.max(0.7, 1 - deckDistance * 0.09),
+      opacity: clamp(1 - Math.max(distance - 2.7, 0) * 0.7, 0, 1),
+      rotate: deckOffset * 4,
+      rotateY: deckOffset * -3,
+      zIndex: Math.round(110 - Math.min(distance * 18, 104)),
+    };
+  }
+
+  if (animation === "split") {
+    return {
+      ...baseState,
+      x: relative * layoutGap * 0.82,
+      y: lane * (70 + Math.min(distance * 34, 86)),
+      scale: Math.max(0.76, 1 - distance * 0.12),
+      opacity: clamp(1 - distance * 0.46, 0, 1),
+      rotate: lane * clamp(relative * 7, -12, 12),
+      rotateY: lane * clamp(relative * 14, -20, 20),
+    };
+  }
+
+  if (animation === "flip") {
+    return {
+      ...baseState,
+      x: relative * layoutGap * 0.58,
+      y: lane * Math.min(distance * 10, 16),
+      scale: Math.max(0.68, 1 - distance * 0.15),
+      opacity: clamp(1 - distance * 0.52, 0, 1),
+      rotateX: lane * clamp(distance * 4, 0, 8),
+      rotateY: clamp(relative * -48, -76, 76),
+    };
+  }
+
+  return baseState;
+}
+
+function useDesktopCardMotion({ index, total, progress, settings, cardGap }) {
+  const stateFor = (latest) => desktopCardState({
+    animation: settings.desktopAnimation,
+    layout: settings.desktopLayout,
+    cardGap,
+    index,
+    total,
+    latest,
   });
-  const opacity = useTransform(scrollYProgress, (latest) => {
-    const scrollStep = latest * Math.max(totalCards - 1, 1);
-    const slideStart = visibleCount - 1;
+  const x = useTransform(progress, (latest) => stateFor(latest).x);
+  const y = useTransform(progress, (latest) => stateFor(latest).y);
+  const scale = useTransform(progress, (latest) => stateFor(latest).scale);
+  const opacity = useTransform(progress, (latest) => stateFor(latest).opacity);
+  const rotate = useTransform(progress, (latest) => stateFor(latest).rotate);
+  const rotateX = useTransform(progress, (latest) => stateFor(latest).rotateX);
+  const rotateY = useTransform(progress, (latest) => stateFor(latest).rotateY);
+  const zIndex = useTransform(progress, (latest) => stateFor(latest).zIndex);
 
-    if (scrollStep <= slideStart) {
-      if (absoluteIdx === 0) return 1;
+  return { x, y, scale, opacity, rotate, rotateX, rotateY, zIndex };
+}
 
-      const revealProgress = clamp(scrollStep - (absoluteIdx - 1), 0, 1);
-
-      return absoluteIdx < visibleCount ? revealProgress : 0;
-    }
-
-    const slideRaw = scrollStep - slideStart;
-    const slideIndex = Math.floor(slideRaw);
-    const slideProgress = slideRaw - slideIndex;
-    const slot = absoluteIdx - slideIndex;
-
-    if (slot === 0) return 1 - slideProgress;
-    if (slot === visibleCount) return slideProgress;
-    if (slot > 0 && slot < visibleCount) return 1;
-    return 0;
-  });
-  const scale = useTransform(scrollYProgress, (latest) => {
-    const scrollStep = latest * Math.max(totalCards - 1, 1);
-    const slideStart = visibleCount - 1;
-
-    if (scrollStep <= slideStart) {
-      if (absoluteIdx === 0) return 1;
-
-      const revealProgress = clamp(scrollStep - (absoluteIdx - 1), 0, 1);
-
-      return absoluteIdx < visibleCount ? 0.94 + revealProgress * 0.06 : 0.94;
-    }
-
-    const slideRaw = scrollStep - slideStart;
-    const slideIndex = Math.floor(slideRaw);
-    const slideProgress = slideRaw - slideIndex;
-    const slot = absoluteIdx - slideIndex;
-
-    if (slot === visibleCount) return 0.94 + slideProgress * 0.06;
-    if (slot === 0) return 1 - slideProgress * 0.06;
-    return 1;
-  });
-  const y = useTransform(scrollYProgress, (latest) => {
-    const scrollStep = latest * Math.max(totalCards - 1, 1);
-    const slideStart = visibleCount - 1;
-    const offset = isTop ? -30 : 30;
-
-    if (scrollStep <= slideStart) {
-      if (absoluteIdx === 0) return 0;
-
-      const revealProgress = clamp(scrollStep - (absoluteIdx - 1), 0, 1);
-
-      return absoluteIdx < visibleCount ? offset * (1 - revealProgress) : offset;
-    }
-
-    const slideRaw = scrollStep - slideStart;
-    const slideIndex = Math.floor(slideRaw);
-    const slideProgress = slideRaw - slideIndex;
-    const slot = absoluteIdx - slideIndex;
-
-    if (slot === visibleCount) return offset * (1 - slideProgress);
-    if (slot === 0) return offset * slideProgress;
-    return 0;
-  });
-  const pointerEvents = absoluteIdx >= activeIndex && absoluteIdx < activeIndex + visibleCount ? "auto" : "none";
+function DesktopJourneyCard({ journey, index, total, progress, settings }) {
+  const cardGap = settings.desktopVisibleCards >= 4
+    ? 250
+    : settings.desktopVisibleCards <= 2
+      ? 500
+      : 350;
+  const cardMotion = useDesktopCardMotion({ index, total, progress, settings, cardGap });
 
   return (
-    
     <motion.div
-      className="absolute left-1/2 top-1/2 flex justify-center items-center"
-      style={{ opacity, x, y: "-50%", scale, pointerEvents }}
-      initial={false}
-      exit={{ opacity: 0, scale: 0.92 }}
-      transition={{
-        duration: 0.8,
-        ease: [0.22, 1, 0.36, 1],
-      }}
+      className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+      style={{ perspective: "1500px", zIndex: cardMotion.zIndex }}
     >
-      <motion.div
-        className="z-10 w-7 h-7 rounded-full bg-[#8B0FD9]/70 shadow-[0_0_0_12px_rgba(126,34,206,0.13)]"
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.8 }}
-        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <motion.div
-          className={`absolute ${isTop ? "-bottom-8" : "-top-8"} left-1  translate-x-2 w-[3px] bg-[#8B0FD9]/70 `}
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 40 }}
-          exit={{ opacity: 0, height: 20 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-        />
-      </motion.div>
-
       <motion.article
-        className={`absolute ${
-          isTop ? "top-12" : "bottom-12"
-        } bg-gray-900/80 backdrop-blur border border-gray-700/70 rounded-xl p-7 shadow-lg`}
-        style={{ width: "400px", maxWidth: "450px" }}
-        initial={false}
-        transition={{
-          duration: 0.8,
-          ease: [0.22, 1, 0.36, 1],
+        className={`${cardWidthClass(settings.desktopVisibleCards)} relative overflow-hidden rounded-lg border p-6 shadow-2xl backdrop-blur sm:p-7`}
+        style={{
+          backgroundColor: withAlpha(settings.cardColor, 0.9),
+          borderColor: withAlpha(settings.accentColor, 0.38),
+          boxShadow: `0 18px 65px ${withAlpha(settings.accentColor, 0.13)}`,
+          opacity: cardMotion.opacity,
+          rotate: cardMotion.rotate,
+          rotateX: cardMotion.rotateX,
+          rotateY: cardMotion.rotateY,
+          scale: cardMotion.scale,
+          transformStyle: "preserve-3d",
+          x: cardMotion.x,
+          y: cardMotion.y,
         }}
       >
-        <h3 className="text-xl font-semibold">{exp.role}</h3>
-        <p className="text-md text-gray-400 mb-3">
-          {exp.company} | {exp.duration}
+        <div className="absolute inset-x-0 top-0 h-px" style={{ backgroundColor: withAlpha(settings.accentColor, 0.8) }} />
+        <div className="flex items-start justify-between gap-4">
+          {settings.showCardNumber && (
+            <span className="text-xs font-bold tracking-[0.2em]" style={{ color: settings.accentColor }}>
+              {initialsForIndex(index)}
+            </span>
+          )}
+          <span className="ml-auto max-w-[58%] text-right text-xs font-medium leading-relaxed text-white/45">
+            {journey.duration}
+          </span>
+        </div>
+        <h3 className="mt-6 break-words text-xl font-semibold leading-tight text-white sm:text-2xl">
+          {journey.role}
+        </h3>
+        {journey.company && <p className="mt-3 break-words text-sm font-medium text-white/60">{journey.company}</p>}
+        <p className="mt-4 break-words text-sm leading-relaxed text-white/68 sm:text-base">
+          {journey.description}
         </p>
-        <p className="text-md text-gray-400 break-words">{exp.description}</p>
       </motion.article>
     </motion.div>
   );
 }
 
-function DesktopTimeline({ exps, scrollYProgress, visibleCount }) {
-  const maxIndex = Math.max(exps.length - visibleCount, 0);
-  const [activeIndex, setActiveIndex] = useState(0);
-  const lineSize = useTransform(scrollYProgress, (v) => `${v * 100}%`);
-  const visibleCards = useMemo(
-    () => {
-      const cardLimit = Math.min(visibleCount + 1, exps.length - activeIndex);
+function DesktopJourneyGuide({ progress, settings }) {
+  const borderColor = withAlpha(settings.accentColor, 0.24);
+  const glowColor = withAlpha(settings.accentColor, 0.72);
 
-      return exps.slice(activeIndex, activeIndex + cardLimit);
-    },
-    [activeIndex, exps, visibleCount]
+  if (settings.desktopAnimation === "orbit") {
+    return (
+      <>
+        <div
+          className="absolute left-1/2 top-1/2 h-[22rem] w-[22rem] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed"
+          style={{ borderColor }}
+        />
+        <div
+          className="absolute left-1/2 top-1/2 h-[12rem] w-[12rem] -translate-x-1/2 -translate-y-1/2 rounded-full border"
+          style={{ borderColor: withAlpha(settings.accentColor, 0.14) }}
+        />
+      </>
+    );
+  }
+
+  if (settings.desktopAnimation === "deck") {
+    return (
+      <>
+        <div
+          className="absolute left-1/2 top-1/2 h-[16rem] w-[min(54vw,31rem)] rounded-lg border"
+          style={{ borderColor, transform: "translate(-50%, -50%) rotate(-7deg)" }}
+        />
+        <div
+          className="absolute left-1/2 top-1/2 h-[16rem] w-[min(54vw,31rem)] rounded-lg border"
+          style={{ borderColor: withAlpha(settings.accentColor, 0.13), transform: "translate(-50%, -50%) rotate(7deg)" }}
+        />
+      </>
+    );
+  }
+
+  if (settings.desktopAnimation === "split") {
+    return (
+      <>
+        <div className="absolute left-0 right-0 h-px" style={{ backgroundColor: borderColor, top: "calc(50% - 4.5rem)" }} />
+        <div className="absolute left-0 right-0 h-px" style={{ backgroundColor: borderColor, top: "calc(50% + 4.5rem)" }} />
+        <motion.div
+          className="absolute left-0 h-px origin-left"
+          style={{
+            backgroundColor: settings.accentColor,
+            boxShadow: `0 0 22px ${glowColor}`,
+            scaleX: progress,
+            top: "calc(50% - 4.5rem)",
+            width: "100%",
+          }}
+        />
+        <motion.div
+          className="absolute left-0 h-px origin-left"
+          style={{
+            backgroundColor: settings.accentColor,
+            boxShadow: `0 0 22px ${glowColor}`,
+            scaleX: progress,
+            top: "calc(50% + 4.5rem)",
+            width: "100%",
+          }}
+        />
+      </>
+    );
+  }
+
+  if (settings.desktopAnimation === "flip") {
+    return (
+      <>
+        <div className="absolute bottom-12 left-1/2 top-8 w-px -translate-x-1/2" style={{ backgroundColor: borderColor }} />
+        <motion.div
+          className="absolute bottom-12 left-1/2 top-8 w-px origin-top -translate-x-1/2"
+          style={{
+            backgroundColor: settings.accentColor,
+            boxShadow: `0 0 22px ${glowColor}`,
+            scaleY: progress,
+          }}
+        />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2" style={{ backgroundColor: borderColor }} />
+      <motion.div
+        className="absolute left-0 top-1/2 h-px origin-left -translate-y-1/2"
+        style={{
+          backgroundColor: settings.accentColor,
+          boxShadow: `0 0 24px ${glowColor}`,
+          scaleX: progress,
+          width: "100%",
+        }}
+      />
+    </>
   );
+}
 
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    const scrollStep = latest * Math.max(exps.length - 1, 1);
-    const slideStart = visibleCount - 1;
-    const nextIndex =
-      scrollStep <= slideStart ? 0 : clamp(Math.floor(scrollStep - slideStart), 0, maxIndex);
+function DesktopJourney({ journeys, progress, settings }) {
+  const [activeIndex, setActiveIndex] = useState(0);
 
-    setActiveIndex((current) => {
-      if (current === nextIndex) return current;
-      return nextIndex;
-    });
+  useMotionValueEvent(progress, "change", (latest) => {
+    const nextIndex = clamp(Math.round(latest * Math.max(journeys.length - 1, 1)), 0, Math.max(journeys.length - 1, 0));
+
+    setActiveIndex((current) => (current === nextIndex ? current : nextIndex));
   });
 
   return (
-    <div className="relative w-full max-w-7xl">
-      <div className="absolute left-0 right-0 top-1/2 z-0 h-[6px] -translate-y-1/2 bg-white/15 rounded shadow-[0_0_28px_rgba(255,255,255,0.16)]">
-        <motion.div
-          className="absolute left-0 top-0 h-[6px] bg-[#8B0FD9]/80 rounded origin-left shadow-[0_0_16px_rgba(255,255,255,0.75)]"
-          style={{ width: lineSize }}
-        />
-      </div>
+    <div className="relative h-[min(35rem,64vh)] w-full max-w-7xl" aria-label="Journey timeline">
+      <DesktopJourneyGuide progress={progress} settings={settings} />
 
-      <div className="relative z-10 h-[520px] mt-0 overflow-visible">
-        <AnimatePresence initial={false}>
-          {visibleCards.map((exp, slot) => (
-            <DesktopExpItem
-              key={`${activeIndex + slot}-${exp.company}-${exp.role}`}
-              exp={exp}
-              absoluteIdx={activeIndex + slot}
-              activeIndex={activeIndex}
-              totalCards={exps.length}
-              visibleCount={visibleCount}
-              scrollYProgress={scrollYProgress}
-            />
-          ))}
-        </AnimatePresence>
+      {journeys.map((journey, index) => (
+        <DesktopJourneyCard
+          key={`${journey.role}-${journey.company}-${index}`}
+          journey={journey}
+          index={index}
+          progress={progress}
+          settings={settings}
+          total={journeys.length}
+        />
+      ))}
+
+      <div className="absolute bottom-0 left-1/2 flex -translate-x-1/2 items-center gap-3 text-xs font-semibold tracking-[0.18em] text-white/45">
+        <span style={{ color: settings.accentColor }}>{initialsForIndex(activeIndex)}</span>
+        <span>/</span>
+        <span>{initialsForIndex(Math.max(journeys.length - 1, 0))}</span>
       </div>
     </div>
   );
 }
 
-export default function Experienceprochat() {
-  const sceneRef = useRef(null);
+function MobileJourney({ journeys, progress, settings }) {
+  const isTimeline = settings.mobileLayout === "timeline";
+  const cardGap = numberSetting(settings.mobileCardGap, 28, 16, 80);
+
+  return (
+    <div className="relative mx-auto mt-10 w-full max-w-lg">
+      {isTimeline && (
+        <div className="absolute bottom-1 left-[0.8rem] top-1 w-px" style={{ backgroundColor: withAlpha(settings.accentColor, 0.22) }}>
+          {settings.showMobileProgress && (
+            <motion.div
+              className="absolute inset-x-0 top-0 origin-top"
+              style={{
+                backgroundColor: settings.accentColor,
+                boxShadow: `0 0 18px ${withAlpha(settings.accentColor, 0.65)}`,
+                height: "100%",
+                scaleY: progress,
+              }}
+            />
+          )}
+        </div>
+      )}
+
+      <div className="grid" style={{ gap: `${cardGap}px`, perspective: "1000px" }}>
+        {journeys.map((journey, index) => {
+          const cardMotion = motionForMobile(settings.mobileAnimation, index);
+
+          return (
+            <motion.article
+            key={`${journey.role}-${journey.company}-${index}`}
+            className={`relative overflow-hidden rounded-lg border p-5 shadow-xl backdrop-blur ${isTimeline ? "ml-9" : ""}`}
+            style={{
+              backgroundColor: withAlpha(settings.cardColor, 0.9),
+              borderColor: withAlpha(settings.accentColor, 0.35),
+              boxShadow: `0 16px 48px ${withAlpha(settings.accentColor, 0.12)}`,
+              transformOrigin: mobileTransformOrigin(settings.mobileAnimation, index),
+              transformStyle: "preserve-3d",
+            }}
+            initial={cardMotion.initial}
+            whileInView={cardMotion.visible}
+            viewport={{ amount: 0.3, once: false }}
+            transition={mobileCardTransition(settings.mobileAnimation, index)}
+          >
+            {isTimeline && (
+              <motion.span
+                className="absolute -left-[2.25rem] top-6 h-4 w-4 rounded-full border-4"
+                style={{
+                  backgroundColor: settings.cardColor,
+                  borderColor: settings.accentColor,
+                  boxShadow: `0 0 0 7px ${withAlpha(settings.accentColor, 0.12)}`,
+                }}
+                initial={{ scale: 0.7, opacity: 0.5 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ amount: 0.3, once: false }}
+                transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              />
+            )}
+            <div className="absolute inset-x-0 top-0 h-px" style={{ backgroundColor: withAlpha(settings.accentColor, 0.75) }} />
+            <div className="flex items-start justify-between gap-3">
+              {settings.showCardNumber && (
+                <span className="text-xs font-bold tracking-[0.2em]" style={{ color: settings.accentColor }}>
+                  {initialsForIndex(index)}
+                </span>
+              )}
+              <span className="ml-auto text-right text-xs font-medium leading-relaxed text-white/45">
+                {journey.duration}
+              </span>
+            </div>
+            <h3 className="mt-5 break-words text-xl font-semibold leading-tight text-white">{journey.role}</h3>
+            {metaForJourney(journey) && <p className="mt-2 break-words text-sm font-medium text-white/60">{metaForJourney(journey)}</p>}
+            <p className="mt-4 break-words text-sm leading-relaxed text-white/68">{journey.description}</p>
+          </motion.article>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+export default function Experienceprochat({ content = portfolioDefaults }) {
+  const journeys = getPortfolioList(content, "journeys");
+  const desktopSceneRef = useRef(null);
   const mobileSceneRef = useRef(null);
-  const [visibleCount, setVisibleCount] = useState(3);
-  const desktopVisibleCount = Math.min(visibleCount, exps.length);
+  const settings = useMemo(() => {
+    const source = { ...portfolioDefaults.journeySection, ...(content.journeySection || {}) };
 
-  useEffect(() => {
-    const checkMobile = () => {
-      const width = window.innerWidth;
-
-      setVisibleCount(width >= 1280 ? 4 : 3);
+    return {
+      ...source,
+      desktopLayout: selectSetting(source.desktopLayout, desktopLayouts, "rail"),
+      desktopAnimation: selectSetting(source.desktopAnimation, desktopAnimations, "glide"),
+      desktopVisibleCards: numberSetting(source.desktopVisibleCards, 3, 2, 4),
+      desktopScrollVh: numberSetting(source.desktopScrollVh, 38, 20, 100),
+      mobileLayout: selectSetting(source.mobileLayout, mobileLayouts, "timeline"),
+      mobileAnimation: selectSetting(source.mobileAnimation, mobileAnimations, "rise"),
+      mobileCardGap: numberSetting(source.mobileCardGap, 28, 16, 80),
+      showCardNumber: source.showCardNumber !== false,
+      showMobileProgress: source.showMobileProgress !== false,
     };
-
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
-
-  const SCEN_HEIGHT_VH = 30 * Math.max(exps.length - 1, 1);
-
-  const { scrollYProgress } = useScroll({
-    target: sceneRef,
+  }, [content.journeySection]);
+  const desktopSceneHeight = Math.max(settings.desktopScrollVh * Math.max(journeys.length - 1, 1), 115);
+  const { scrollYProgress: desktopProgress } = useScroll({
+    target: desktopSceneRef,
     offset: ["start start", "end end"],
   });
-  const { scrollYProgress: mobileScrollYProgress } = useScroll({
+  const { scrollYProgress: mobileProgress } = useScroll({
     target: mobileSceneRef,
     offset: ["start end", "end start"],
   });
 
-  const mobileLineSize = useTransform(mobileScrollYProgress, (v) => `${v * 100}%`);
-
   return (
-    
-    <section id="exp" className="relative bg-black text-white">
+    <section id="exp" className="relative overflow-x-clip bg-[#05070a] text-white">
       <ParticlesBackground />
 
-    <div className="relative z-10">
-      
-      <div ref={mobileSceneRef} className="relative min-h-screen px-6 pb-16 pt-8 md:hidden">
-        
-        <h2 className="text-4xl font-semibold text-center">Journey</h2>
-          
-        <div className="relative mx-auto mt-12 w-full max-w-md">
-          <div className="absolute bottom-0 left-0 top-0 w-[3px] rounded bg-white/15">
-            <motion.div
-              className="absolute left-0 top-0 w-[3px] rounded bg-white origin-top shadow-[0_0_28px_rgba(255,255,255,0.75)]"
-              style={{ height: mobileLineSize }}
-            />
-          </div>
-
-          <div className="flex flex-col gap-10">
-            {exps.map((exp, idx) => (
-              <motion.div
-                key={`${exp.company}-${exp.role}-${idx}`}
-                className="relative flex items-start"
-                initial={{ opacity: 0.72, x: 24, y: 14, scale: 0.98 }}
-                whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-                viewport={{ once: false, amount: 0.25 }}
-                transition={{
-                  duration: 0.65,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-              >
-                <motion.div
-                  className="absolute -left-[14px] top-3 z-10 h-7 w-7 rounded-full bg-white shadow-[0_0_0_8px_rgba(255,255,255,0.13)]"
-                  initial={{ opacity: 0.72, scale: 0.85 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: false, amount: 0.25 }}
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                />
-
-                <article className="ml-6 w-[90%] max-w-sm rounded-xl border border-gray-700/70 bg-gray-900/80 p-5 shadow-lg backdrop-blur">
-                  <h3 className="text-lg font-semibold break-words">{exp.role}</h3>
-                  <p className="text-sm text-gray-400 mb-2 break-words">
-                    {exp.company} | {exp.duration}
-                  </p>
-                  <p className="text-sm text-gray-400 mb-2 break-words">{exp.description}</p>
-                </article>
-              </motion.div>
-            ))}
-          </div>
-        </div>
+      <div ref={mobileSceneRef} className="relative z-10 px-5 py-20 sm:px-8 lg:hidden">
+        <header className="mx-auto max-w-lg">
+          {settings.eyebrow?.trim() && (
+            <p className="text-sm font-semibold tracking-[0.18em]" style={{ color: settings.accentColor }}>
+              {settings.eyebrow.trim()}
+            </p>
+          )}
+          <h2 className="mt-3 text-4xl font-semibold tracking-normal text-white sm:text-5xl">{settings.title}</h2>
+        </header>
+        <MobileJourney journeys={journeys} progress={mobileProgress} settings={settings} />
       </div>
 
-      <div
-        ref={sceneRef}
-        style={{ height: `${SCEN_HEIGHT_VH}vh`, minHeight: "120vh" }}
-        className="relative hidden md:block"
-      >
-        <div className="sticky top-0 h-screen flex flex-col">
-          <h2 className="text-8xl sm:text-8xl font-bold mt-5 text-center">
-            Journey
-          </h2>
-          <div className="flex flex-1 items-start justify-center px-6 pb-10 md:items-center">
-            <DesktopTimeline
-              exps={exps}
-              scrollYProgress={scrollYProgress}
-              visibleCount={desktopVisibleCount}
-            />
+      <div ref={desktopSceneRef} className="relative z-10 hidden lg:block" style={{ height: `${desktopSceneHeight}vh` }}>
+        <div className="sticky top-0 flex h-screen flex-col overflow-hidden px-8 py-12 xl:px-12">
+          <header className="mx-auto w-full max-w-7xl">
+            {settings.eyebrow?.trim() && (
+              <p className="text-sm font-semibold tracking-[0.2em]" style={{ color: settings.accentColor }}>
+                {settings.eyebrow.trim()}
+              </p>
+            )}
+            <h2 className="mt-3 text-6xl font-semibold tracking-normal text-white xl:text-7xl">{settings.title}</h2>
+          </header>
+          <div className="flex min-h-0 flex-1 items-center justify-center">
+            <DesktopJourney journeys={journeys} progress={desktopProgress} settings={settings} />
           </div>
         </div>
-      </div>
       </div>
     </section>
   );

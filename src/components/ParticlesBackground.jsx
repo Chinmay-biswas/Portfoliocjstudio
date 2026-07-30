@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 
 
-export default function ParticlesBackground() {
+export default function ParticlesBackground({ color = "#6B27B0" }) {
 const canvasRef = useRef(null);
 
 useEffect(()=>{
@@ -11,7 +11,7 @@ useEffect(()=>{
 
     let particles =[];
     const particleCount =50;
-    const colors = ['#6B27B0'];
+    const colors = [color];
 
     class Particle{
         constructor(){
@@ -86,7 +86,7 @@ useEffect(()=>{
         window.removeEventListener('resize', handelResize);
     }
 
-},[])
+},[color])
 
 return (
 

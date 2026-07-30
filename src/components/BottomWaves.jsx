@@ -1,6 +1,19 @@
 import { motion } from "framer-motion";
 
-export default function BottomWaves() {
+function hexToRgb(color) {
+  const hex = String(color || "").replace("#", "").trim();
+  const normalized = hex.length === 3
+    ? hex.split("").map((part) => part + part).join("")
+    : hex;
+
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) return "107,39,176";
+
+  return `${parseInt(normalized.slice(0, 2), 16)},${parseInt(normalized.slice(2, 4), 16)},${parseInt(normalized.slice(4, 6), 16)}`;
+}
+
+export default function BottomWaves({ color = "#6B27B0" }) {
+  const rgb = hexToRgb(color);
+
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[2] h-52 overflow-hidden">
       <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black via-black/75 to-transparent" />
@@ -15,12 +28,12 @@ export default function BottomWaves() {
       >
         <path
           d="M0 108 C120 52 240 166 360 106 C480 46 600 26 720 94 C840 162 960 166 1080 102 C1200 38 1320 54 1440 118 L1440 220 L0 220 Z"
-          fill="rgba(107,39,176,0.16)"
+          fill={`rgba(${rgb},0.16)`}
         />
         <path
           d="M0 108 C120 52 240 166 360 106 C480 46 600 26 720 94 C840 162 960 166 1080 102 C1200 38 1320 54 1440 118"
           fill="none"
-          stroke="rgba(107,39,176,0.45)"
+          stroke={`rgba(${rgb},0.45)`}
           strokeWidth="2"
         />
       </motion.svg>
@@ -35,12 +48,12 @@ export default function BottomWaves() {
       >
         <path
           d="M0 132 C150 190 300 56 450 128 C600 200 720 182 870 112 C1020 42 1200 72 1440 150 L1440 240 L0 240 Z"
-          fill="rgba(107,39,176,0.12)"
+          fill={`rgba(${rgb},0.12)`}
         />
         <path
           d="M0 132 C150 190 300 56 450 128 C600 200 720 182 870 112 C1020 42 1200 72 1440 150"
           fill="none"
-          stroke="rgba(107,39,176,0.35)"
+          stroke={`rgba(${rgb},0.35)`}
           strokeWidth="2"
         />
       </motion.svg>
@@ -55,7 +68,7 @@ export default function BottomWaves() {
       >
         <path
           d="M0 142 C100 118 180 86 300 126 C420 166 520 220 680 138 C840 56 930 74 1040 124 C1150 174 1280 198 1440 118 L1440 260 L0 260 Z"
-          fill="rgba(107,39,176,0.18)"
+          fill={`rgba(${rgb},0.18)`}
         />
       </motion.svg>
 

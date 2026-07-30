@@ -2,8 +2,9 @@ import { CgMenuBoxed } from "react-icons/cg";
 import OverlayMenu from "./OverlayMenu";
 import { useEffect, useRef , useState } from "react";
 import Logo from "../assets/Logo.png";
+import { portfolioDefaults, sectionOrderDefaults } from "../data/portfolioDefaults";
 
-export default function Navbar(){
+export default function Navbar({ content = portfolioDefaults, visibleSections = {}, sectionOrder = sectionOrderDefaults }){
 
     const [menuOpen, setMenuOpen] = useState(false);
     const [visible, setVisible] = useState(true);
@@ -12,6 +13,9 @@ export default function Navbar(){
 
     const lastScrollY = useRef(0);
     const timerId = useRef(null);
+    const homeSection = { ...portfolioDefaults.homeSection, ...(content.homeSection || {}) };
+    const homeGradient = `linear-gradient(90deg, ${homeSection.accentStart}, ${homeSection.accentMiddle}, ${homeSection.accentEnd})`;
+    const showContact = visibleSections.contact !== false;
 
     useEffect(() => {
         const homeSection = document.querySelector('#home');
@@ -89,20 +93,22 @@ export default function Navbar(){
 
             <div className="flex items-center space-x-2"
             >
-            <img src={Logo} alt="Logo" className="w-12 h-8 inline-block mr-0" />
-            <div className="text-2xl font-bold text-white hidden sm:block">Chinmay Biswas</div></div>
+            <img src={content.media?.logoUrl || Logo} alt="Logo" className="w-12 h-8 inline-block mr-0 object-contain" />
+            <div className="text-2xl font-bold text-white hidden sm:block">{content.name || portfolioDefaults.name}</div></div>
 
             <div className="block lg:absolute lg:left-1/2 lg:transform lg:-translate-x-1/2">
                 <button onClick={()=>{ setMenuOpen(true) , setVisible(false)}  } className="flex h-11 w-11 items-center justify-center text-white text-3xl focus:outline-none" aria-label="Open Menu"><CgMenuBoxed /></button>
 
             </div>
 
+            {showContact && (
             <div className="hidden lg:block">
-                <a href="#contact" className="bg-linear-to-r from-[#b05ce0] via-[#7b32c0] to-[#4e0480] text-white px-5 py-2 rounded-full font-medium shadow-lg hover:opacity-90 transition-opacity duration-300">
-                    Reach Out
+                <a href={content.navigation?.contactHref || "#contact"} className="rounded-full px-5 py-2 font-medium text-white shadow-lg transition-opacity duration-300 hover:opacity-90" style={{ background: homeGradient }}>
+                    {content.navigation?.contactLabel || "Reach Out"}
                 </a>
 
             </div>
+            )}
 
 
                
@@ -117,6 +123,9 @@ export default function Navbar(){
         
         <OverlayMenu
   isOpen={menuOpen}
+  content={content}
+  visibleSections={visibleSections}
+  sectionOrder={sectionOrder}
   onClose={() => {
     setMenuOpen(false)
     setVisible(true)

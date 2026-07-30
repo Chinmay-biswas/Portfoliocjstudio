@@ -1,11 +1,6 @@
 import { FaLinkedinIn, FaGithub, FaInstagram } from "react-icons/fa";
 import { motion } from "framer-motion";
-
-const socials= [ 
-  {Icon: FaInstagram,label:"Instagram", href: "https://instagram.com/chinmaybiswas475"},
-  {Icon: FaLinkedinIn,label:"LinkedIn", href: "https://www.linkedin.com/in/chinmay-biswas-a8098b298/"},
-  {Icon: FaGithub,label:"GitHub", href: "https://github.com/Chinmay-biswas"}
-]
+import { getPortfolioList, portfolioDefaults } from "../data/portfolioDefaults";
 
 const glowVariants = {
   initial: {
@@ -38,7 +33,10 @@ const glowVariants = {
   },
 };
 
-export default function Footer() {
+export default function Footer({ content = portfolioDefaults }) {
+  const socials = getPortfolioList(content, "socials");
+  const footer = { ...portfolioDefaults.footer, ...(content.footer || {}) };
+
   return (
     <footer className="relative overflow-hidden bg-black">
 
@@ -68,7 +66,7 @@ export default function Footer() {
             textShadow: "0 2px 18px rgba(0,0,0,0.45)",
           }}
         >
-          Chinmay Biswas
+          {content.name || portfolioDefaults.name}
         </h1>
 
         {/* Gradient Line */}
@@ -77,9 +75,11 @@ export default function Footer() {
         {/* Social Icons */}
         <div className="flex gap-5 text-2xl md:text-3xl">
 
-          {socials.map(({ Icon, label, href }) => (
+          {socials.map(({ label, url }) => {
+            const Icon = label === "LinkedIn" ? FaLinkedinIn : label === "Instagram" ? FaInstagram : FaGithub;
+            return (
             <motion.a
-              href={href}
+              href={url}
               key={label}
               aria-label={label}
               target="_blank"
@@ -94,18 +94,18 @@ export default function Footer() {
             >
               <Icon />
             </motion.a>
-          ))}
+          )})}
 
         </div>
 
         {/* Quote */}
         <p className="text-gray-300 italic max-w-xl">
-          “Success is when preparation meets opportunity.”
+          {footer.quote}
         </p>
 
         {/* Copyright */}
         <p className="text-xs text-gray-400">
-          &copy; {new Date().getFullYear()} Chinmay Biswas. All rights reserved.
+          &copy; {new Date().getFullYear()} {content.name || portfolioDefaults.name}. All rights reserved.
         </p>
 
       </motion.div>

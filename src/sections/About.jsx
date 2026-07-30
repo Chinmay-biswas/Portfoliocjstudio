@@ -1,7 +1,8 @@
-import { delay, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import p from "../assets/profile1.png"
+import { getPortfolioList, portfolioDefaults } from "../data/portfolioDefaults";
 
-export default function About() {
+export default function About({ content = portfolioDefaults, visibleSections = {} }) {
 
   const glows = [
     "-top-10 -left-10 w-[360px] h-[360px] opacity-20 blur-[120px]",
@@ -9,95 +10,24 @@ export default function About() {
     "top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[220px] h-[220px] opacity-10 blur-[100px] delay-200",
   ]
 
-  const achievements = [
-  {
-    label: "🏆 IITG GameJam",
-    value: "Runner-Up for developing a complete Unity-based game"
-  },
-
-  {
-    label: "🎮 IGDC Competition",
-    value: "Built and led the development of Pheneon Quest"
-  },
-
-  {
-    label: "💻 DSA & Competitive Coding",
-    value: "Active problem solving on LeetCode & Codeforces"
-  },
-
-  {
-    label: "🚀 AI-Powered Systems",
-    value: "Currently integrating suggestion systems using AI/ML"
-  },
-
-  {
-    label: "⚡ Leadership",
-    value: "Led teams and managed end-to-end game development projects"
-  },
-
-  {
-    label: "🧠 Fast Learner",
-    value: "Adapted across game development, web development, and AI/ML"
-  }
-];
-
-const stats = [
-  {
-    label: "Frontend",
-    value: "React.js • Tailwind CSS • JavaScript • HTML/CSS"
-  },
-
-  {
-    label: "Backend",
-    value: "Node.js • Express.js • MongoDB • REST APIs"
-  },
-
-  {
-    label: "Game Development",
-    value: "Unity • C# • Gameplay Systems • Level Design"
-  },
-
-  {
-    label: "AI/ML",
-    value: "Python • Machine Learning • Suggestion Systems"
-  },
-
-  {
-    label: "Programming",
-    value: "C++ • DSA • LeetCode • Codeforces"
-  },
-
-  {
-    label: "Tools",
-    value: "Git • GitHub • Canva • Kaggle • Postman"
-  },
-
-  {
-    label: "Platforms",
-    value: "Google Colab • Jupyter Notebook • Anaconda • Vercel • Clerk"
-  },
-
-  {
-    label: "Deployment",
-    value: "Vercel • Render • Netlify • GitHub Pages"
-  },
-
-  {
-  label: "Creative & Design",
-  value: "Canva • UI Design • Video Editing • HiPaint • Creative Workflows"
-}
-];
+  const stats = getPortfolioList(content, "aboutStats");
+  const achievements = getPortfolioList(content, "achievements");
+  const section = { ...portfolioDefaults.aboutSection, ...(content.aboutSection || {}) };
+  const getText = (value, fallback) => (
+    content.initialized === true ? (value || "") : (value || fallback)
+  );
 
   return (
     <section id='about'
     className="min-h-screen w-full flex items-center justify-center relative bg-black text-white overflow-hidden"
+    style={{ backgroundColor: "var(--site-background)" }}
 
     >
 
       <div className="absolute inset-0 pointer-events-none">
         {glows.map((c,i)=>(
           <div key={i}
-          className={`absolute rounded-full bg-gradient-to-r  from-[#b05ce0] via-[#7b32c0] to-[#4e0480] animate-pulse ${c}`}/>
+          className={`absolute rounded-full bg-gradient-to-r from-[#1cd8d2] via-[#00bf8f] to-[#302b63] animate-pulse ${c}`}/>
         ))}</div>
 
           <div className="relative z-10 max-w-6xl w-full mx-auto px-6 md:px-10 lg:px-12 py-20 flex flex-col  gap-12">
@@ -112,7 +42,7 @@ const stats = [
           
 
               <motion.div className="relative w-[160px] h-[220px] md:w-[200px] md:h-[320px]
-              rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-[#b05ce0] via-[#7b32c0] to-[#4e0480]
+              rounded-2xl overflow-hidden shadow-2xl bg-gradient-to-br from-[#1cd8d2]/20  to-[#302b63]/20
               border-[#1cd8d2]/25 "
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 15 }}
@@ -120,7 +50,7 @@ const stats = [
                   whileInView={{ opacity: 1, x: 0 }}
                   transition={{duration: 1}}
                   viewport={{ amount:0.2}}>
-                <img src={p} alt="profile " className="absolute inset-0 w-full h-full object-cover"/>
+                <img src={content.media?.aboutProfileUrl || p} alt="profile" className="absolute inset-0 w-full h-full object-cover"/>
               </motion.div>
 
               <div className=" flex-1 flex flex-col justify-center text-center md:text-left">
@@ -129,27 +59,27 @@ const stats = [
                   transition={{duration: 1}}
                   viewport={{ amount:0.4}}>
                   <h2 className="text-4xl sm:text-5xl font-extrabold bg-clip-text text-transparent 
-                  bg-gradient-to-r  from-[#b05ce0] via-[#7b32c0] to-[#4e0480] hover:scale-102 transition"
+                  bg-gradient-to-r from-[#1cd8d2] to-[#b2e0d7] hover:scale-102 transition"
                  >
-                  Chinmay Biswas
+                  {content.name || portfolioDefaults.name}
                 </h2>
                 <p className="mt-2 text-lg sm:text-xl text-gray-300 font-semibold hover:scale-102 transition">
-                  Unity Game Developer | MERN Stack Developer | AI/ML Explorer | DSA Enthusiast
+                   {content.headline || portfolioDefaults.headline}
                 </p>
                 <p className="mt-4 text-gray-400 max-w-2xl md:max-w-3xl leading-relaxed sm:text-lg">
-                  I'm a passionate web developer with a knack for crafting beautiful and functional websites. With expertise in React, Tailwind CSS, and JavaScript, I create seamless user experiences. I thrive on learning new technologies and contributing to open source projects. Let's build something amazing together!
+                  {content.aboutShort || content.about || portfolioDefaults.aboutShort}
                 </p></motion.div>
 
                 <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4  mx-w-xl">
                   {stats.map((item,i) => (
 
                     <motion.div key={i} className="border-2 border-white/10 px-4 py-3 
-                    text-center rounded-xl inline-block hover:scale-105 hover:border-white transition"
+                    text-center rounded-xl inline-block hover:scale-105 transition"
                     initial={{ opacity: 0, y: 20 }}
                     whileInView={{opacity:1,y:0}}
                     
-                    transition={{delay:(i*0.1),duration:0.05}}
-                    viewport={{amount:0.1}}>
+                    transition={{delay:(i*0.3),duration:0.4}}
+                    viewport={{amount:0.6}}>
                       <div className=" font-semibold text-white text-lg hover:scale-103 transition">
                         {item.label}</div>
                         <div className="text-mauve-400  mt-2 hover:scale-103 transition">
@@ -161,17 +91,16 @@ const stats = [
 
                 </div>
 
-                <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
-                  <a href="#projects" className="inline-flex items-center justify-center rounded-lg bg-white
-                   text-black font-semibold px-5 py-3 hover:bg-gray-200 transition hover:scale-95"
-                   >See My Work</a>
-
-
-                  <a href="#contact" className="inline-flex items-center justify-center rounded-lg bg-transparent
-                   text-white font-semibold px-5 py-3 border-2 border-white hover:bg-white
-                    hover:text-black transition hover:scale-95"
-                    >Let’s Connect</a>
-                </div>
+                {(visibleSections.projects !== false || visibleSections.contact !== false) && (
+                  <div className="mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
+                    {visibleSections.projects !== false && (
+                      <a href="#projects" className="inline-flex items-center justify-center rounded-lg bg-white text-black font-semibold px-5 py-3 hover:bg-gray-200 transition hover:scale-95">{section.projectsButtonLabel}</a>
+                    )}
+                    {visibleSections.contact !== false && (
+                      <a href="#contact" className="inline-flex items-center justify-center rounded-lg bg-transparent text-white font-semibold px-5 py-3 border-2 border-white hover:bg-white hover:text-black transition hover:scale-95">{section.contactButtonLabel}</a>
+                    )}
+                  </div>
+                )}
 
               </div>
 
@@ -188,48 +117,35 @@ const stats = [
 
                     <h3 className="text-2xl sm:text-3xl font-bold text-white mb-3">
                       
-                      About Me </h3>
+                      {section.title} </h3>
                       <p className="text-gray-300 leading-relaxed text-base sm:text-lg">
-                        I’m Chinmay Biswas, a 3rd-year B.Tech student at IIT Guwahati who enjoys building creative and impactful digital experiences through development, design, 
-                        and problem-solving. My journey started with game development in Unity,where I explored storytelling, gameplay mechanics, and interactive system design, 
-                        eventually leading teams and developing projects like Echoes of Regret.
+                        {getText(content.aboutLong || content.about, portfolioDefaults.aboutLong)}
                       </p> 
                       <p className="mt-4 text-gray-400 text-base sm:text-lg">
-                        Over time, my interests expanded into MERN stack development, 
-                        where I started building scalable and responsive web applications such as Hot Corner, 
-                        a full-stack movie ticket booking platform. Currently, 
-                        I’m also exploring AI/ML technologies and working on integrating intelligent 
-                        suggestion systems into my projects to create smarter user experiences.
+                        {getText(content.aboutExtra, portfolioDefaults.aboutExtra)}
 
                       </p>
                       <p className="mt-4 text-gray-400 text-base sm:text-lg">
-                        I enjoy learning new technologies, adapting across different domains, and building complete products from idea to deployment. 
-                        Whether it’s game development, web applications, DSA problem solving on platforms like LeetCode and Codeforces, 
-                        or experimenting with AI-driven systems, I love pushing myself to continuously learn, create, and improve.
-
+                        {getText(content.aboutFinal, portfolioDefaults.aboutFinal)}
                       </p>
 
                   </motion.div>
-                  <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4  mx-w-xl">
-                  {achievements.map((item,i) => (
 
-                    <motion.div key={i} className="border-2 border-white/10 px-4 py-3 
-                    text-center rounded-xl inline-block hover:scale-105 hover:border-white transition"
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{opacity:1,y:0}}
-                    
-                    transition={{delay:(i*0.1),duration:0.05}}
-                    viewport={{amount:0.1}}>
-                      <div className=" font-semibold text-white text-lg hover:scale-103 transition">
-                        {item.label}</div>
-                        <div className="text-mauve-400  mt-2 hover:scale-103 transition">
-                          {item.value}
-                        </div>
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+                    {achievements.map((item, index) => (
+                      <motion.div
+                        key={`${item.label}-${index}`}
+                        className="rounded-xl border-2 border-white/10 px-4 py-3 text-center transition hover:scale-105"
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1, duration: 0.35 }}
+                        viewport={{ amount: 0.2 }}
+                      >
+                        <div className="text-lg font-semibold text-white">{item.label}</div>
+                        <div className="mt-2 text-gray-400">{item.value}</div>
                       </motion.div>
-
-                  ))}
-
-                </div>
+                    ))}
+                  </div>
 
 
 
