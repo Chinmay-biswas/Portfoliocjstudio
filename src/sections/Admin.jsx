@@ -162,7 +162,10 @@ export default function Admin() {
 
       try {
         const response = await fetch("/api/portfolio");
-        if (!response.ok) throw new Error("Could not load portfolio content");
+        if (!response.ok) {
+          const responseBody = await response.json().catch(() => null);
+          throw new Error(responseBody?.message || "Could not load portfolio content");
+        }
 
         const nextForm = asForm(await response.json());
         setForm(nextForm);

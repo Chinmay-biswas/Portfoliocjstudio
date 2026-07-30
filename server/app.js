@@ -117,7 +117,10 @@ async function requireDatabase(req, res, next) {
   const connected = await connectDatabase();
 
   if (!connected) {
-    return res.status(503).json({ message: "MongoDB is reconnecting. Please try again shortly." });
+    const message = mongoUri
+      ? "MongoDB is unavailable. Check the Atlas Network Access list and MONGODB_URI in Vercel."
+      : "MongoDB is not configured. Add MONGODB_URI in Vercel and redeploy.";
+    return res.status(503).json({ message });
   }
 
   next();
@@ -132,8 +135,12 @@ async function getContentDocument() {
 }
 
 app.get("/api/health", async (req, res) => {
-  await connectDatabase();
-  res.json({ ok: true, databaseReady });
+  const connected = await connectDatabase();
+  res.status(connected ? 200 : 503).json({
+    ok: connected,
+    databaseReady,
+    databaseConfigured: Boolean(mongoUri),
+  });
 });
 
 app.post("/api/admin/verify", requireAdmin, (req, res) => {
