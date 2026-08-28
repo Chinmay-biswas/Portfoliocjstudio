@@ -21,6 +21,7 @@ const hasBlobStorage = Boolean(process.env.BLOB_READ_WRITE_TOKEN);
 const usesServerlessUploadStorage = isVercel || hasBlobStorage;
 const maxUploadBytes = usesServerlessUploadStorage ? 4 * 1024 * 1024 : 12 * 1024 * 1024;
 const maxUploadLabel = usesServerlessUploadStorage ? "4 MB" : "12 MB";
+const uploadsBucketName = "portfolio_uploads";
 const serverDirectory = path.dirname(fileURLToPath(import.meta.url));
 const uploadsDirectory = path.join(serverDirectory, "uploads");
 const mongoDnsServers = (process.env.MONGODB_DNS_SERVER || "")
@@ -113,6 +114,33 @@ function requireAdmin(req, res, next) {
   next();
 }
 
+function getUploadsBucket() {
+  if (!mongoose.connection.db) {
+    throw new Error("MongoDB connection is not ready");
+  }
+
+  return new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+    bucketName: uploadsBucketName,
+  });
+}
+
+function storeUploadInMongo(file, kind) {
+  const extension = path.extname(file.originalname).toLowerCase();
+  const uploadStream = getUploadsBucket().openUploadStream(`${randomUUID()}${extension}`, {
+    metadata: {
+      contentType: file.mimetype,
+      kind,
+      originalName: file.originalname,
+    },
+  });
+
+  return new Promise((resolve, reject) => {
+    uploadStream.once("error", reject);
+    uploadStream.once("finish", () => resolve(uploadStream.id));
+    uploadStream.end(file.buffer);
+  });
+}
+
 async function requireDatabase(req, res, next) {
   const connected = await connectDatabase();
 
@@ -147,7 +175,7 @@ app.post("/api/admin/verify", requireAdmin, (req, res) => {
   res.json({ ok: true });
 });
 
-app.post("/api/admin/upload", requireAdmin, (req, res) => {
+app.post("/api/admin/upload", requireAdmin, requireDatabase, (req, res) => {
   if (!uploadKinds.has(req.query.kind)) {
     res.status(400).json({ message: "Choose whether this upload is an image or PDF" });
     return;
@@ -167,11 +195,6 @@ app.post("/api/admin/upload", requireAdmin, (req, res) => {
       return;
     }
 
-    if (isVercel && !hasBlobStorage) {
-      res.status(503).json({ message: "Uploads need BLOB_READ_WRITE_TOKEN in the Vercel environment." });
-      return;
-    }
-
     try {
       let url;
 
@@ -183,6 +206,9 @@ app.post("/api/admin/upload", requireAdmin, (req, res) => {
           contentType: req.file.mimetype,
         });
         url = blob.url;
+      } else if (isVercel) {
+        const fileId = await storeUploadInMongo(req.file, req.query.kind);
+        url = `/api/media/${fileId.toString()}`;
       } else {
         url = `/uploads/${encodeURIComponent(req.file.filename)}`;
       }
@@ -198,6 +224,45 @@ app.post("/api/admin/upload", requireAdmin, (req, res) => {
       res.status(500).json({ message: "Could not store the uploaded file" });
     }
   });
+});
+
+app.get("/api/media/:id", requireDatabase, async (req, res) => {
+  if (!mongoose.isValidObjectId(req.params.id)) {
+    res.status(404).json({ message: "Uploaded media not found" });
+    return;
+  }
+
+  try {
+    const fileId = new mongoose.Types.ObjectId(req.params.id);
+    const storedFile = await mongoose.connection.db
+      .collection(`${uploadsBucketName}.files`)
+      .findOne({ _id: fileId });
+
+    if (!storedFile) {
+      res.status(404).json({ message: "Uploaded media not found" });
+      return;
+    }
+
+    res.set({
+      "Cache-Control": "public, max-age=31536000, immutable",
+      "Content-Length": String(storedFile.length),
+      "Content-Type": storedFile.metadata?.contentType || "application/octet-stream",
+    });
+
+    const downloadStream = getUploadsBucket().openDownloadStream(fileId);
+    downloadStream.once("error", (error) => {
+      console.error("Could not read uploaded media", error.message);
+      if (res.headersSent) {
+        res.destroy(error);
+        return;
+      }
+      res.status(500).json({ message: "Could not read uploaded media" });
+    });
+    downloadStream.pipe(res);
+  } catch (error) {
+    console.error("Could not read uploaded media", error.message);
+    res.status(500).json({ message: "Could not read uploaded media" });
+  }
 });
 
 app.get("/api/portfolio", requireDatabase, async (req, res) => {
